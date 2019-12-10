@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <RelativeLayout
+    android:id="@+id/bgLayer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="0.1dp"
+    android:background="@color/white">
+
+    <RelativeLayout
+      android:id="@+id/selectorLayer"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="?android:selectableItemBackground"
+      android:padding="@dimen/spacing_1x">
+
+      <TextView
+        android:id="@+id/wordView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/spacing_1x"
+        android:gravity="center"
+        android:maxLines="2"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textSize="@dimen/text_size_character_default"/>
+
+      <TextView
+        android:id="@+id/meansView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/wordView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/spacing_1x"
+        android:ellipsize="end"
+        android:gravity="center_horizontal|top"
+        android:maxLines="2"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption"/>
+
+      <TextView
+        android:id="@+id/categoryView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/meansView"
+        android:layout_marginTop="@dimen/spacing_1x"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+        android:visibility="gone"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+      android:id="@+id/checkLayer"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentRight="true"
+      android:paddingBottom="@dimen/spacing_1x"
+      android:paddingEnd="@dimen/spacing_quarter"
+      android:paddingLeft="@dimen/spacing_1x"
+      android:paddingRight="@dimen/spacing_quarter"
+      android:paddingStart="@dimen/spacing_1x"
+      android:paddingTop="@dimen/spacing_quarter">
+
+      <ImageView
+        android:id="@+id/check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_check_black_18dp"
+        android:tint="@color/bluegrey_light"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+      android:id="@+id/swapLayer"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:paddingBottom="@dimen/spacing_1x"
+      android:paddingEnd="@dimen/spacing_1x"
+      android:paddingLeft="@dimen/spacing_quarter"
+      android:paddingRight="@dimen/spacing_1x"
+      android:paddingStart="@dimen/spacing_quarter"
+      android:paddingTop="@dimen/spacing_quarter">
+
+      <ImageView
+        android:id="@+id/swap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_swap_horiz_white_18dp"
+        android:tint="@color/bluegrey_light"/>
+    </RelativeLayout>
+
+  </RelativeLayout>
+
+</merge>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <integer name="stroke_scale_factor">30</integer>
+  <integer name="max_line_width">80</integer>
+  <integer name="min_line_width">5</integer>
+  <integer name="kana_column_count">5</integer>
+  <integer name="list_comp_column_count">5</integer>
+  <integer name="list_uncom_column_count">4</integer>
+  <integer name="list_check_column_count">3</integer>
+  <integer name="list_column_count">3</integer>
+  <integer name="card_column_count">1</integer>
+  <integer name="rank_column_count">1</integer>
+
+  <integer name="guide_column_count">3</integer>
+
+  <integer name="visible_applink1">1</integer>
+  <integer name="visible_applink2">1</integer>
+  <integer name="visible_applink3">1</integer>
+
+  <integer-array name="category_ids">
+    <item>1</item>
+    <item>2</item>
+    <item>3</item>
+    <item>4</item>
+    <item>5</item>
+    <item>6</item>
+    <item>7</item>
+    <item>8</item>
+    <item>9</item>
+    <item>10</item>
+    <item>11</item>
+    <item>12</item>
+    <item>13</item>
+    <item>14</item>
+    <item>15</item>
+  </integer-array>
+
+  <integer name="notificationId">989899081</integer>
+</resources>

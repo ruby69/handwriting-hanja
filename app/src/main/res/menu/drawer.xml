@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <group
+    android:id="@+id/grp1"
+    android:checkableBehavior="single">
+    <item
+      android:id="@+id/menuList"
+      android:checked="true"
+      android:icon="@drawable/ic_apps_black_24dp"
+      android:title="@string/nav_title_list"/>
+    <item
+      android:id="@+id/menuGames"
+      android:checkable="false"
+      android:icon="@drawable/ic_gamepad_black_24dp"
+      android:title="@string/nav_title_games"/>
+  </group>
+
+
+  <group
+    android:id="@+id/grp2"
+    android:checkableBehavior="single">
+    <item
+      android:id="@+id/menuLockscreen"
+      android:checkable="false"
+      android:icon="@drawable/ic_lightbulb_outline_black_24dp"
+      android:title="@string/nav_title_lockscreen"/>
+    <item
+      android:id="@+id/menuLockscreenSettings"
+      android:icon="@drawable/ic_settings_black_24dp"
+      android:title="@string/nav_title_lockscreen_settings"/>
+
+    <item
+      android:id="@+id/fontScale"
+      android:checkable="false"
+      android:icon="@drawable/ic_format_size_black_24dp"
+      android:title="@string/nav_title_font"/>
+  </group>
+
+
+</menu>

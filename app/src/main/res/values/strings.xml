@@ -1,0 +1,110 @@
+<resources>
+  <string name="app_name" translatable="false">한자공부</string>
+  <string name="admob_app_id" translatable="false">xxxxxxxxxx</string>
+  <string name="admob_interstitial_unit_id" translatable="false">xxxxxxxxxx</string>
+  <string name="admob_banner_unit_id" translatable="false">xxxxxxxxxx</string>
+
+  <string name="nav_title_list" translatable="false">목록보기</string>
+  <string name="nav_title_games" translatable="false">Games</string>
+  <string name="nav_title_lockscreen" translatable="false">켜자마자 학습</string>
+  <string name="nav_title_lockscreen_settings" translatable="false">학습설정</string>
+  <string name="nav_title_font" translatable="false">글자 크기</string>
+
+  <string name="tab_title_mastered" translatable="false">암기완료</string>
+  <string name="tab_title_learning" translatable="false">암기중</string>
+  <string name="tab_title_checked" translatable="false">체크목록</string>
+
+  <string name="message_db_fail" translatable="false">이런..\n데이터베이스 초기화에 실패하였습니다.</string>
+  <string name="message_progress_update" translatable="false">업데이트중</string>
+  <string name="message_wait" translatable="false">잠시만 기다려 주세요.</string>
+  <string name="message_confirm_lockscreen" translatable="false">\"켜자마자 학습\" 기능을 활성화 합니다. \"학습설정\"에서 해제하실 수 있습니다.</string>
+
+  <string name="message_no_words" translatable="false">사용할 수있는 한자가 없습니다.</string>
+  <string name="message_permissions_granted" translatable="false">필요권한이 허락되었습니다. 계속 진행합니다.</string>
+  <string name="message_permissions_not_granted" translatable="false">필요권한이 허락되지 않았습니다.</string>
+
+  <string name="label_repeat_count" translatable="false">반복횟수</string>
+  <string name="label_stroke_speed" translatable="false">속도</string>
+  <string name="label_stroke_animation" translatable="false">애니메이션 설정</string>
+  <string name="label_stroke_order" translatable="false">획순</string>
+  <string name="label_confirm" translatable="false">확인</string>
+  <string name="ok" translatable="false">OK</string>
+  <string name="label_continue" translatable="false">계속 진행 하시겠습니까?</string>
+
+  <string name="label_game_history" translatable="false">결과기록</string>
+  <string name="label_game_play" translatable="false">Play</string>
+  <string name="label_game_combo" formatted="false" translatable="false">%s (max)</string>
+  <string name="label_game_combo1" formatted="false" translatable="false">%s 콤보</string>
+  <string name="label_game_select_category" translatable="false">카테고리</string>
+  <string name="label_game_select_count" translatable="false">한자수</string>
+  <string name="label_game_select_hint_delay" translatable="false">힌트타임</string>
+  <string name="label_game_pause" translatable="false">일시멈춤</string>
+  <string name="label_game_quit" translatable="false">종료</string>
+  <string name="label_game_resume" translatable="false">계속</string>
+
+  <string name="label_reset" translatable="false">초기화</string>
+  <string name="label_word" translatable="false">한자</string>
+  <string name="label_meaning" translatable="false">훈음</string>
+
+  <string name="label_lockscreen" translatable="false">켜자마자 학습</string>
+  <string name="label_lockscreen_noti_title" translatable="false">켜자마자 학습중</string>
+  <string name="label_lockscreen_noti_content" translatable="false">켜자마자 학습을 끝내시려면 누르세요.</string>
+  <string name="label_clock" translatable="false">시계표시(이동가능)</string>
+  <string name="label_use" translatable="false">사용</string>
+  <string name="label_not_use" translatable="false">미사용</string>
+  <string name="label_select" translatable="false">선택</string>
+  <string name="label_unselect" translatable="false">미선택</string>
+
+  <string name="label_font_tiny" translatable="false">아주 작게</string>
+  <string name="label_font_small" translatable="false">작게</string>
+  <string name="label_font_normal" translatable="false">보통</string>
+  <string name="label_font_large" translatable="false">크게</string>
+  <string name="label_font_scale" translatable="false">글자 크기</string>
+
+  <string name="label_interval" translatable="false">업데이트 간격(초) : </string>
+  <string name="label_unconscious" translatable="false">무의식 학습</string>
+  <string name="label_unconscious_noti_title" translatable="false">무의식 학습중</string>
+  <string name="label_unconscious_noti_content" translatable="false">무의식 학습을 끝내시려면 누르세요.</string>
+  <string name="label_unconscious_bg" translatable="false">배경</string>
+
+  <string name="label_lock_collection" translatable="false">카테고리&amp;그룹</string>
+  <string name="label_collection_all" translatable="false">모든한자</string>
+  <string name="label_collection_learning" translatable="false">암기중</string>
+  <string name="label_collection_mastered" translatable="false">암기완료</string>
+  <string name="label_collection_checked" translatable="false">체크목록</string>
+  <string name="label_mastered" translatable="false">암기완료</string>
+  <string name="label_learning" translatable="false">다시암기</string>
+
+  <string name="label_check_set" translatable="false">체크하기</string>
+  <string name="label_check_unset" translatable="false">체크해제</string>
+  <string name="label_finish" translatable="false">네, 지금 종료합니다</string>
+  <string name="label_reset_confirm" translatable="false">네, 모든 학습상태를 초기화 합니다.</string>
+  <string name="label_game" translatable="false">네, 워드 게임을 시작합니다.</string>
+  <string name="label_game_finish" translatable="false">네, 워드 게임을 종료합니다.</string>
+  <string name="label_lock_off" translatable="false">네, 지금부터 5분간 켜자마자 학습을 중지합니다.</string>
+  <string name="label_onlock_start" translatable="false">네, \"켜자마자 학습\" 미리보기를 시작합니다.</string>
+  <string name="label_onlock_finish" translatable="false">네, \"켜자마자 학습\" 미리보기를 종료합니다.</string>
+
+  <string name="label_noticed" translatable="false">알려드립니다</string>
+  <string name="label_keep_going" translatable="false">계속</string>
+  <string name="label_exit" translatable="false">종료</string>
+  <string name="label_i_checked" translatable="false">다시보지않음</string>
+  <string name="label_kanji_notice" translatable="false">
+    <![CDATA[
+    본 앱에서 표시되는 한자의 획순은 KanjiVG(http://kanjivg.tagaini.net/) 에서 제공하는 데이터를 사용하고 있으며, 이 데이터는 일본어 칸지를 기준으로 작성되어 있습니다.\n\n이로 인하여 일부 데이터의 획순 정보가 표시되지 않거나, 혹은 우리나라 한자와 다를 수 있습니다.\n\n이점 참고하시어 본 앱의 획순 정보는 학습에 참고용으로만 사용하시기 바랍니다.
+  ]]>
+  </string>
+
+  <string name="url_check_http" translatable="false">https://clients3.google.com/generate_204</string>
+
+  <string name="db_name" translatable="false">hanja</string>
+  <integer name="db_version">10</integer>
+  <string name="sql_category_insert" translatable="false">INSERT INTO `Category` (`categoryUid`,`name`) values(?, ?)</string>
+  <string name="sql_word_insert" translatable="false">INSERT INTO `Word` (`wordUid`,`word`,`bushou`,`strokeCount`,`means`,`path`) values(?,?,?,?,?,?)</string>
+  <string name="sql_word_reset" translatable="false" formatted="true">UPDATE `Word` SET `checked`=0, `completed`=0 WHERE wordUid IN ( SELECT w2.wordUid FROM `CategoryWord` cw INNER JOIN `Word` w2 ON cw.wordUid = w2.wordUid WHERE cw.categoryUid=%1$d AND (w2.checked=1 OR w2.completed=1) )</string>
+  <string name="sql_categoryword_insert" translatable="false">INSERT INTO `CategoryWord` (`categoryUid`,`wordUid`) values(?, ?)</string>
+  <string name="sql_categoryword_init" translatable="false">UPDATE `CategoryWord` SET `rand`=`categoryWordUid`</string>
+  <string name="sql_categoryword_rand" translatable="false">UPDATE `CategoryWord` SET `rand`=RANDOM()</string>
+
+
+</resources>

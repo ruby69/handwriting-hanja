@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/containerLayer"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <fragment
+    android:id="@+id/lockFragment"
+    android:name="com.appskimo.app.hanja.ui.frags.LockFragment_"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+
+  <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/spacing_1x">
+
+    <ImageButton
+      android:id="@+id/menu"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:background="?android:selectableItemBackground"
+      android:padding="@dimen/spacing_1x"
+      android:src="@drawable/ic_menu_black_24dp"
+      android:tint="@android:color/white" />
+
+    <ImageButton
+      android:id="@+id/lockOff"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/spacing_1x"
+      android:background="?android:selectableItemBackground"
+      android:padding="@dimen/spacing_1x"
+      android:src="@drawable/ic_speaker_notes_off_black_24dp"
+      android:tint="@android:color/white" />
+
+  </LinearLayout>
+
+  <DigitalClock
+    android:id="@+id/clock"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_2x"
+    android:background="@drawable/bg_clock"
+    android:paddingStart="@dimen/spacing_2x"
+    android:paddingLeft="@dimen/spacing_2x"
+    android:paddingTop="@dimen/spacing_quarter"
+    android:paddingEnd="@dimen/spacing_2x"
+    android:paddingRight="@dimen/spacing_2x"
+    android:paddingBottom="@dimen/spacing_quarter"
+    android:singleLine="true"
+    android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+    android:textColor="@color/white" />
+</RelativeLayout>

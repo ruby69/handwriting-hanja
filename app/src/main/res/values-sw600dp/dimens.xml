@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <dimen name="note_width">300dp</dimen>
+  <dimen name="text_guide">340dp</dimen>
+  <dimen name="button_corner_radius">4dp</dimen>
+
+  <dimen name="text_size_game_character">34dp</dimen>
+  <dimen name="text_size_game_meaning1">30dp</dimen>
+  <dimen name="text_size_game_meaning2">26dp</dimen>
+  <dimen name="text_size_game_meaning3">18dp</dimen>
+  <dimen name="text_size_game_chronometer">34dp</dimen>
+  <dimen name="text_size_game_score">34dp</dimen>
+
+  <dimen name="game_top_height">180dp</dimen>
+  <dimen name="game_bottom_height">100dp</dimen>
+  <dimen name="game_meaning2_width">230dp</dimen>
+  <dimen name="game_meaning3_width">150dp</dimen>
+</resources>

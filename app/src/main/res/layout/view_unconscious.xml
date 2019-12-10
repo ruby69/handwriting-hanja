@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+  xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <LinearLayout
+    android:id="@+id/unconsciousLayer"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/spacing_1x"
+    android:background="@drawable/unconscious_grey"
+    android:gravity="center"
+    android:minWidth="100dp"
+    android:orientation="vertical"
+    android:padding="@dimen/spacing_1x">
+
+    <TextView
+      android:id="@+id/textView"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:gravity="center"
+      android:textAppearance="@style/TextAppearance.AppCompat.Title"
+      android:textColor="@color/grey_light"/>
+
+    <TextView
+      android:id="@+id/meansView"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/spacing_half"
+      android:ellipsize="end"
+      android:gravity="center"
+      android:maxLines="1"
+      android:textColor="@color/grey_light"/>
+
+  </LinearLayout>
+
+</merge>

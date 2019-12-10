@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <RelativeLayout
+    android:id="@+id/wordViewLayer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/spacing_6x"
+    android:layout_marginStart="@dimen/spacing_6x"
+    android:layout_marginTop="@dimen/spacing_12x">
+
+    <TextView
+      android:id="@+id/wordView"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="@dimen/spacing_2x"
+      android:layout_marginStart="@dimen/spacing_2x"
+      android:textSize="160sp"
+      android:textColor="@color/white"/>
+
+    <View
+      android:id="@+id/under1"
+      android:layout_width="match_parent"
+      android:layout_height="3dp"
+      android:layout_below="@+id/wordView"
+      android:background="@color/grey"/>
+
+    <View
+      android:id="@+id/under2"
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:layout_below="@+id/under1"
+      android:layout_marginTop="@dimen/spacing_quarter"
+      android:background="@color/grey"/>
+
+  </RelativeLayout>
+
+  <TextView
+    android:id="@+id/meansView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentEnd="true"
+    android:layout_alignParentRight="true"
+    android:layout_below="@+id/wordViewLayer"
+    android:layout_marginEnd="@dimen/spacing_6x"
+    android:layout_marginLeft="@dimen/spacing_6x"
+    android:layout_marginRight="@dimen/spacing_6x"
+    android:layout_marginStart="@dimen/spacing_6x"
+    android:layout_marginTop="@dimen/spacing_4x"
+    android:gravity="end|right|center_vertical"
+    android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+    android:textColor="@color/grey_light"/>
+
+  <RelativeLayout
+    android:id="@+id/adLayer2"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/wordViewLayer"
+    android:layout_alignParentEnd="true"
+    android:layout_marginTop="@dimen/spacing_4x"
+    android:layout_marginEnd="@dimen/spacing_2x"
+    android:visibility="gone">
+
+    <com.google.android.gms.ads.AdView
+      android:id="@+id/adBanner2"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerInParent="true"
+      app:adSize="MEDIUM_RECTANGLE"
+      app:adUnitId="@string/admob_banner_unit_id" />
+
+  </RelativeLayout>
+
+  <RelativeLayout
+    android:id="@+id/swipeLayer"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:layout_centerHorizontal="true"
+    android:layout_centerInParent="true"
+    android:layout_marginBottom="@dimen/spacing_10x"
+    android:minWidth="200dp">
+
+    <com.ebanx.swipebtn.SwipeButton
+      android:id="@+id/swipe"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_centerInParent="true"
+      android:layout_marginEnd="@dimen/spacing_6x"
+      android:layout_marginLeft="@dimen/spacing_6x"
+      android:layout_marginRight="@dimen/spacing_6x"
+      android:layout_marginStart="@dimen/spacing_6x"
+      app:button_background="@drawable/swipe_button_bg"
+      app:button_bottom_padding="@dimen/spacing_half"
+      app:button_image_disabled="@drawable/ic_forward_black_24dp"
+      app:button_image_height="30dp"
+      app:button_image_width="150dp"
+      app:button_left_padding="@dimen/spacing_12x"
+      app:button_top_padding="@dimen/spacing_half"/>
+
+    <LinearLayout
+      android:id="@+id/optionsLayer"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerInParent="true"
+      android:gravity="center"
+      android:orientation="horizontal"
+      android:visibility="gone">
+
+      <ImageButton
+        android:id="@+id/refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_marginEnd="@dimen/spacing_half"
+        android:layout_marginRight="@dimen/spacing_half"
+        android:background="@drawable/button_bg_check_a"
+        android:paddingEnd="@dimen/spacing_1x"
+        android:paddingLeft="@dimen/spacing_1x"
+        android:paddingRight="@dimen/spacing_1x"
+        android:paddingStart="@dimen/spacing_1x"
+        android:src="@drawable/ic_refresh_white_18dp"/>
+
+      <Button
+        android:id="@+id/masterOrLearning"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_marginEnd="@dimen/spacing_half"
+        android:layout_marginLeft="@dimen/spacing_half"
+        android:layout_marginRight="@dimen/spacing_half"
+        android:layout_marginStart="@dimen/spacing_half"
+        android:background="@drawable/button_bg_check_a"
+        android:drawableLeft="@drawable/ic_swap_horiz_white_18dp"
+        android:drawablePadding="@dimen/spacing_1x"
+        android:drawableStart="@drawable/ic_swap_horiz_white_18dp"
+        android:paddingEnd="@dimen/spacing_2x"
+        android:paddingLeft="@dimen/spacing_2x"
+        android:paddingRight="@dimen/spacing_2x"
+        android:paddingStart="@dimen/spacing_2x"
+        android:textColor="@color/white"/>
+
+      <Button
+        android:id="@+id/check"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_marginLeft="@dimen/spacing_half"
+        android:layout_marginStart="@dimen/spacing_half"
+        android:background="@drawable/button_bg_check_a"
+        android:drawableEnd="@drawable/ic_check_white_18dp"
+        android:drawablePadding="@dimen/spacing_1x"
+        android:drawableRight="@drawable/ic_check_white_18dp"
+        android:paddingEnd="@dimen/spacing_2x"
+        android:paddingLeft="@dimen/spacing_2x"
+        android:paddingRight="@dimen/spacing_2x"
+        android:paddingStart="@dimen/spacing_2x"
+        android:textColor="@color/white"/>
+
+    </LinearLayout>
+  </RelativeLayout>
+
+  <LinearLayout
+    android:id="@+id/menuLayer"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:layout_centerHorizontal="true"
+    android:layout_marginBottom="@dimen/spacing_2x"
+    android:orientation="horizontal">
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+      android:id="@+id/prev"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:src="@drawable/ic_navigate_before_black_24dp"
+      app:backgroundTint="@color/grey_light"
+      app:elevation="0dp"
+      app:fabSize="mini"
+      app:pressedTranslationZ="0dp"
+      app:rippleColor="@color/colorAccent"
+      app:useCompatPadding="true"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+      android:id="@+id/random"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="@dimen/spacing_4x"
+      android:layout_marginLeft="@dimen/spacing_4x"
+      android:layout_marginRight="@dimen/spacing_4x"
+      android:layout_marginStart="@dimen/spacing_4x"
+      android:src="@drawable/ic_shuffle_black_24dp"
+      app:backgroundTint="@color/grey_light"
+      app:elevation="0dp"
+      app:fabSize="mini"
+      app:pressedTranslationZ="0dp"
+      app:rippleColor="@color/colorAccent"
+      app:useCompatPadding="true"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+      android:id="@+id/next"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:src="@drawable/ic_navigate_next_black_24dp"
+      app:backgroundTint="@color/grey_light"
+      app:elevation="0dp"
+      app:fabSize="mini"
+      app:pressedTranslationZ="0dp"
+      app:rippleColor="@color/colorAccent"
+      app:useCompatPadding="true"/>
+
+  </LinearLayout>
+
+
+  <LinearLayout
+    android:id="@+id/menus"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_above="@+id/optionsMenu"
+    android:layout_alignParentEnd="true"
+    android:layout_alignParentRight="true"
+    android:layout_marginBottom="@dimen/spacing_1x"
+    android:layout_marginEnd="@dimen/spacing_1x"
+    android:layout_marginRight="@dimen/spacing_1x"
+    android:gravity="right|end"
+    android:orientation="vertical">
+
+    <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/spacing_1x"
+      android:gravity="center_vertical"
+      android:orientation="horizontal">
+
+      <TextView
+        android:id="@+id/showWordLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_1x"
+        android:layout_marginRight="@dimen/spacing_1x"
+        android:background="@drawable/options_label_bg_sel"
+        android:paddingBottom="@dimen/spacing_quarter"
+        android:paddingEnd="@dimen/spacing_2x"
+        android:paddingLeft="@dimen/spacing_2x"
+        android:paddingRight="@dimen/spacing_2x"
+        android:paddingStart="@dimen/spacing_2x"
+        android:paddingTop="@dimen/spacing_quarter"
+        android:text="@string/label_word"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+        android:textColor="@color/white"/>
+
+      <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/showWord"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_assignment_white_24dp"
+        app:backgroundTint="@color/colorPrimaryLight"
+        app:elevation="0dp"
+        app:fabSize="mini"
+        app:pressedTranslationZ="0dp"
+        app:useCompatPadding="true"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/spacing_1x"
+      android:gravity="center_vertical"
+      android:orientation="horizontal">
+
+      <TextView
+        android:id="@+id/showMeansLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_1x"
+        android:layout_marginRight="@dimen/spacing_1x"
+        android:background="@drawable/options_label_bg_sel"
+        android:paddingBottom="@dimen/spacing_quarter"
+        android:paddingEnd="@dimen/spacing_2x"
+        android:paddingLeft="@dimen/spacing_2x"
+        android:paddingRight="@dimen/spacing_2x"
+        android:paddingStart="@dimen/spacing_2x"
+        android:paddingTop="@dimen/spacing_quarter"
+        android:text="@string/label_meaning"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+        android:textColor="@color/white"/>
+
+      <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/showMeans"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_description_white_24dp"
+        app:backgroundTint="@color/colorPrimaryLight"
+        app:elevation="0dp"
+        app:fabSize="mini"
+        app:pressedTranslationZ="0dp"
+        app:useCompatPadding="true"/>
+
+    </LinearLayout>
+
+  </LinearLayout>
+
+  <com.google.android.material.floatingactionbutton.FloatingActionButton
+    android:id="@+id/optionsMenu"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentEnd="true"
+    android:layout_alignParentRight="true"
+    android:layout_marginBottom="@dimen/spacing_2x"
+    android:layout_marginEnd="@dimen/spacing_1x"
+    android:layout_marginRight="@dimen/spacing_1x"
+    android:src="@drawable/ic_add_white_24dp"
+    app:elevation="0dp"
+    app:fabSize="mini"
+    app:pressedTranslationZ="0dp"
+    app:useCompatPadding="true"/>
+</RelativeLayout>
