@@ -1,5 +1,6 @@
 package com.appskimo.app.hanja;
 
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -79,7 +80,7 @@ public class LauncherActivity extends AppCompatActivity {
     void launchMain() {
         int count = prefs.executedCount().get();
         prefs.executedCount().put(++count);
-        MainActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
+        MainActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP | PendingIntent.FLAG_IMMUTABLE).start();
         finish();
     }
 

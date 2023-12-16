@@ -62,7 +62,7 @@ public class OnActivity extends AppCompatActivity {
 
     private void initClock() {
         if(prefs.useClock().getOr(true)) {
-            final RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) clock.getLayoutParams();
+            final var params = (RelativeLayout.LayoutParams) clock.getLayoutParams();
 
             params.leftMargin = prefs.clockPosX().getOr(0);
             params.topMargin = prefs.clockPosY().getOr(0);
@@ -115,7 +115,7 @@ public class OnActivity extends AppCompatActivity {
     }
 
     private void doFinish() {
-        miscService.showAdDialog(this, R.string.label_onlock_finish, (dialog, i) -> finish());
+        miscService.showDialog(this, R.string.label_onlock_finish, (dialog, i) -> finish());
     }
 
 }

@@ -1,8 +1,5 @@
 <resources>
-  <string name="app_name" translatable="false">한자공부</string>
-  <string name="admob_app_id" translatable="false">xxxxxxxxxx</string>
-  <string name="admob_interstitial_unit_id" translatable="false">xxxxxxxxxx</string>
-  <string name="admob_banner_unit_id" translatable="false">xxxxxxxxxx</string>
+  <string name="app_name" translatable="false">반복반복</string>
 
   <string name="nav_title_list" translatable="false">목록보기</string>
   <string name="nav_title_games" translatable="false">Games</string>
@@ -22,6 +19,7 @@
   <string name="message_no_words" translatable="false">사용할 수있는 한자가 없습니다.</string>
   <string name="message_permissions_granted" translatable="false">필요권한이 허락되었습니다. 계속 진행합니다.</string>
   <string name="message_permissions_not_granted" translatable="false">필요권한이 허락되지 않았습니다.</string>
+  <string name="message_permissions_phone" translatable="false">전화 수신시, 진행 중인 학습을 잠시 멈추기 위해서 \"전화 액세스 권한\"이 필요합니다.</string>
 
   <string name="label_repeat_count" translatable="false">반복횟수</string>
   <string name="label_stroke_speed" translatable="false">속도</string>
@@ -77,13 +75,13 @@
 
   <string name="label_check_set" translatable="false">체크하기</string>
   <string name="label_check_unset" translatable="false">체크해제</string>
-  <string name="label_finish" translatable="false">네, 지금 종료합니다</string>
-  <string name="label_reset_confirm" translatable="false">네, 모든 학습상태를 초기화 합니다.</string>
-  <string name="label_game" translatable="false">네, 워드 게임을 시작합니다.</string>
-  <string name="label_game_finish" translatable="false">네, 워드 게임을 종료합니다.</string>
-  <string name="label_lock_off" translatable="false">네, 지금부터 5분간 켜자마자 학습을 중지합니다.</string>
-  <string name="label_onlock_start" translatable="false">네, \"켜자마자 학습\" 미리보기를 시작합니다.</string>
-  <string name="label_onlock_finish" translatable="false">네, \"켜자마자 학습\" 미리보기를 종료합니다.</string>
+  <string name="label_finish" translatable="false">지금 종료합니다</string>
+  <string name="label_reset_confirm" translatable="false">모든 학습상태를 초기화 합니다.</string>
+  <string name="label_game" translatable="false">워드 게임을 시작합니다.</string>
+  <string name="label_game_finish" translatable="false">워드 게임을 종료합니다.</string>
+  <string name="label_lock_off" translatable="false">지금부터 5분간 켜자마자 학습을 중지합니다.</string>
+  <string name="label_onlock_start" translatable="false">\"켜자마자 학습\" 미리보기를 시작합니다.</string>
+  <string name="label_onlock_finish" translatable="false">\"켜자마자 학습\" 미리보기를 종료합니다.</string>
 
   <string name="label_noticed" translatable="false">알려드립니다</string>
   <string name="label_keep_going" translatable="false">계속</string>
@@ -105,6 +103,4 @@
   <string name="sql_categoryword_insert" translatable="false">INSERT INTO `CategoryWord` (`categoryUid`,`wordUid`) values(?, ?)</string>
   <string name="sql_categoryword_init" translatable="false">UPDATE `CategoryWord` SET `rand`=`categoryWordUid`</string>
   <string name="sql_categoryword_rand" translatable="false">UPDATE `CategoryWord` SET `rand`=RANDOM()</string>
-
-
 </resources>

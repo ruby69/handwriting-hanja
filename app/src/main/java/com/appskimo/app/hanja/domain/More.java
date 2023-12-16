@@ -13,7 +13,7 @@ public class More implements Serializable {
 
     private Long scale = 80L;
     private List<CategoryWord> content;
-    private Map<String, Object> p = new TreeMap<String, Object>();
+    private Map<String, Object> p = new TreeMap<>();
     private boolean hasMore;
 
     public Integer getLastId() {

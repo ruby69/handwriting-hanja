@@ -1,9 +1,12 @@
-# ⛔️ DEPRECATED
-This repository is now deprecated. 
-
 # Handwriting hanja
-[한자공부 급수별 학습 - 켜자마자 암기 학습](https://play.google.com/store/apps/details?id=com.appskimo.app.hanja)
+[<img alt='Get it on Google Play' src='https://play.google.com/intl/en/badges/static/images/badges/en_badge_web_generic.png'/>](https://play.google.com/store/apps/details?id=com.appskimo.app.hanja)
 
+## Environment
+- Android Studio Electric Eel | 2022.1.1 Patch 2
+- Lombok bundled 221.5080.210
+- JDK11
+- AGP 7.4.2 / Gradle 7.5.1
+- compileSdkVersion 34 / minSdkVersion 23 / targetSdkVersion 34
 
 ## Screen shot
 ![screen shot 01](./images/001.jpg)

@@ -6,6 +6,10 @@ import android.view.View;
 import android.widget.Chronometer;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+
 import com.appskimo.app.hanja.R;
 import com.appskimo.app.hanja.domain.CategoryWord;
 import com.appskimo.app.hanja.event.GameNextAction;
@@ -33,10 +37,6 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Collections;
 import java.util.List;
-
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 
 @EFragment(R.layout.fragment_game_play)
 public class GamePlayFragment extends Fragment {
@@ -106,7 +106,7 @@ public class GamePlayFragment extends Fragment {
         gameService.readySession();
 
         setVisible(countDown, View.VISIBLE);
-        for(final String message : READY_MESSAGE) {
+        for (final var message : READY_MESSAGE) {
             if(gameService.hasCanceled()) {
                 break;
             }
@@ -147,13 +147,13 @@ public class GamePlayFragment extends Fragment {
     @Background
     void startHintObserver() {
         while(true){
-            if(gameService.hasStopped() || gameService.hasCanceled()) {
+            if (gameService.hasStopped() || gameService.hasCanceled()) {
                 break;
             }
 
             try{Thread.sleep(1000);}catch(Exception e){}
 
-            if(gameService.availableHint()){
+            if (gameService.availableHint()){
                 showHintButton();
             }
         }
@@ -161,8 +161,8 @@ public class GamePlayFragment extends Fragment {
 
     @UiThread
     void showHintButton() {
-        TextView button = findButton();
-        if(button != null) {
+        var button = findButton();
+        if (button != null) {
             button.setBackgroundResource(R.drawable.bg_button_game_hint);
         }
     }
@@ -170,10 +170,10 @@ public class GamePlayFragment extends Fragment {
     @Click({R.id.bt01, R.id.bt02, R.id.bt03, R.id.bt04, R.id.bt05, R.id.bt06, R.id.bt07, R.id.bt08, R.id.bt09, R.id.bt10, R.id.bt11, R.id.bt12, R.id.bt13, R.id.bt14, R.id.bt15, R.id.bt16, R.id.bt17, R.id.bt18, R.id.bt19, R.id.bt20, R.id.bt21, R.id.bt22, R.id.bt23, R.id.bt24, R.id.bt25})
     void onClickButton(View view) {
         if(!gameService.hasLockedTouch()) {
-            TextView button = (TextView) view;
-            CategoryWord taggedWord = (CategoryWord)button.getTag();
+            var button = (TextView) view;
+            var taggedWord = (CategoryWord) button.getTag();
 
-            if(taggedWord == gameService.getCurrentWord()) {
+            if (taggedWord == gameService.getCurrentWord()) {
                 long currentTouchedTime = SystemClock.elapsedRealtime();
 
                 gameService.processCombo(currentTouchedTime);
@@ -185,7 +185,7 @@ public class GamePlayFragment extends Fragment {
 
                 button.setText(null);
                 button.setTag(null);
-                if(gameService.emptyWordsInSession()) {
+                if (gameService.emptyWordsInSession()) {
                     finishSession(false);
                 } else {
                     populateNextWord(button);
@@ -197,13 +197,13 @@ public class GamePlayFragment extends Fragment {
     }
 
     private void populateNextWord(TextView button) {
-        if(!gameService.isEmptyWords()) {
+        if (!gameService.isEmptyWords()) {
             populateMeanings();
             YoYo.with(Techniques.Landing).duration(750).playOn(meansView1);
         }
 
-        if(!gameService.isEmptyRemain()) {
-            CategoryWord remainWord = gameService.getRemovedRemainWord();
+        if (!gameService.isEmptyRemain()) {
+            var remainWord = gameService.getRemovedRemainWord();
             button.setText(remainWord.getWord().getWord());
             button.setTag(remainWord);
             YoYo.with(Techniques.FadeIn).duration(1500).playOn(button);
@@ -211,9 +211,9 @@ public class GamePlayFragment extends Fragment {
     }
 
     private void populateMeanings() {
-        CategoryWord currentWord = gameService.getRemovedCurrentWord();
-        CategoryWord next2 = gameService.getWord(0);
-        CategoryWord next3 = gameService.getWord(1);
+        var currentWord = gameService.getRemovedCurrentWord();
+        var next2 = gameService.getWord(0);
+        var next3 = gameService.getWord(1);
 
         meansView1.setText(currentWord.getWord().getMeansForGame());
         meansView2.setText(next2 != null ? next2.getWord().getMeansForGame() : null);
@@ -227,7 +227,7 @@ public class GamePlayFragment extends Fragment {
         chronometer.stop();
         chronometer.setBase(SystemClock.elapsedRealtime());
 
-        if(!force) {
+        if (!force) {
             YoYo.with(Techniques.TakingOff).duration(750).playOn(meansView1);
             gameService.setElapsedTime(elapsedMillis);
             gameService.createGameRecord();
@@ -256,9 +256,9 @@ public class GamePlayFragment extends Fragment {
     }
 
     private TextView findButton(){
-        for(TextView button : buttons) {
-            CategoryWord taggedWord = (CategoryWord) button.getTag();
-            if(taggedWord != null && gameService.getCurrentWord() == taggedWord) {
+        for (var button : buttons) {
+            var taggedWord = (CategoryWord) button.getTag();
+            if (taggedWord != null && gameService.getCurrentWord() == taggedWord) {
                 return button;
             }
         }
@@ -267,7 +267,7 @@ public class GamePlayFragment extends Fragment {
     }
 
     private void cleanButtons() {
-        for(TextView button : buttons) {
+        for (var button : buttons) {
             button.setBackgroundResource(R.drawable.bg_button_game);
             button.setText(null);
             button.setTag(null);
@@ -275,14 +275,14 @@ public class GamePlayFragment extends Fragment {
     }
 
     private void setButtonsTextColor(int color) {
-        for(TextView button : buttons) {
+        for (var button : buttons) {
             button.setTextColor(color);
         }
     }
 
     @Subscribe
     public void onEvent(GameNextAction event) {
-        if(event.getKind() == GameNextAction.Kind.PLAY) {
+        if (event.getKind() == GameNextAction.Kind.PLAY) {
             initialize();
         } else {
             viewPager.setCurrentItem(event.getKind().ordinal(), true);

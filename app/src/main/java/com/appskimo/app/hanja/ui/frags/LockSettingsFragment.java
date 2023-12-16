@@ -1,7 +1,7 @@
 package com.appskimo.app.hanja.ui.frags;
 
+import android.Manifest;
 import android.content.Intent;
-import android.os.Build;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -12,9 +12,10 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+
 import com.appskimo.app.hanja.Constants;
 import com.appskimo.app.hanja.R;
-import com.appskimo.app.hanja.domain.Category;
 import com.appskimo.app.hanja.event.UnconsciousTheme;
 import com.appskimo.app.hanja.service.MiscService;
 import com.appskimo.app.hanja.service.PrefsService_;
@@ -35,12 +36,11 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import androidx.fragment.app.Fragment;
+import pub.devrel.easypermissions.EasyPermissions;
 
 @EFragment(R.layout.fragment_lock_settings)
-public class LockSettingsFragment extends Fragment {
+public class LockSettingsFragment extends Fragment implements EasyPermissions.PermissionCallbacks {
     @ViewById(R.id.lockscreenUse) Switch lockscreenUse;
     @ViewById(R.id.switchLayer) LinearLayout switchLayer;
     @ViewById(R.id.optionAll) RadioButton optionAll;
@@ -79,49 +79,44 @@ public class LockSettingsFragment extends Fragment {
     private void init() {
         lockscreenUse.setChecked(prefs.useLockScreen().get());
 
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        var params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.RIGHT;
 
-        final Set<String> checkedCategories = prefs.checkedCategories().get();
-        CompoundButton.OnCheckedChangeListener listener = new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton button, boolean isChecked) {
-                String uid = (String) button.getTag();
-                if (isChecked) {
-                    checkedCategories.add(uid);
-                } else {
-                    checkedCategories.remove(uid);
-                }
-                prefs.checkedCategories().put(checkedCategories);
-                prefs.categoryWordUid().put(0);
-
-                prefs.collectionType().put(0);
-                optionAll.setChecked(true);
-                optionLearning.setChecked(false);
-                optionMastered.setChecked(false);
-                optionChecked.setChecked(false);
+        final var checkedCategories = prefs.checkedCategories().get();
+        CompoundButton.OnCheckedChangeListener listener = (button, isChecked) -> {
+            String uid = (String) button.getTag();
+            if (isChecked) {
+                checkedCategories.add(uid);
+            } else {
+                checkedCategories.remove(uid);
             }
+            prefs.checkedCategories().put(checkedCategories);
+            prefs.categoryWordUid().put(0);
+
+            prefs.collectionType().put(0);
+            optionAll.setChecked(true);
+            optionLearning.setChecked(false);
+            optionMastered.setChecked(false);
+            optionChecked.setChecked(false);
         };
 
-        String offText = getResources().getString(R.string.label_unselect);
-        String onText = getResources().getString(R.string.label_select);
-        List<Category> categories = vocabService.getCategories();
+        var offText = getResources().getString(R.string.label_unselect);
+        var onText = getResources().getString(R.string.label_select);
+        var categories = vocabService.getCategories();
 
         switchLayer.removeAllViews();
         for (int i = 0; i < categories.size() - 1; i++) {
-            Category category = categories.get(i);
-            String uid = String.valueOf(category.getCategoryUid());
+            var category = categories.get(i);
+            var uid = String.valueOf(category.getCategoryUid());
 
-            Switch sw = new Switch(getActivity());
+            var sw = new Switch(getActivity());
             sw.setText(category.getName());
             sw.setTextOff(offText);
             sw.setTextOn(onText);
             sw.setTag(uid);
             sw.setChecked(checkedCategories.contains(uid));
             sw.setOnCheckedChangeListener(listener);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                sw.setSwitchPadding(lockscreenUse.getSwitchPadding());
-            }
+            sw.setSwitchPadding(lockscreenUse.getSwitchPadding());
 
             switchLayer.addView(sw, params);
             switchList.add(sw);
@@ -151,12 +146,19 @@ public class LockSettingsFragment extends Fragment {
 
     @CheckedChange(R.id.lockscreenUse)
     void onCheckedSwitch(CompoundButton button, boolean isChecked) {
-        if (prefs.useLockScreen().get() != isChecked) {
-            prefs.useLockScreen().put(isChecked);
+        if (hasPermissions()) {
+            if (prefs.useLockScreen().get() != isChecked) {
+                prefs.useLockScreen().put(isChecked);
+                if (isChecked) {
+                    ScreenOffService_.start(getActivity());
+                } else {
+                    ScreenOffService_.intent(getActivity()).stop();
+                }
+            }
+        } else {
             if (isChecked) {
-                ScreenOffService_.start(getActivity());
-            } else {
-                ScreenOffService_.intent(getActivity()).stop();
+                lockscreenUse.setChecked(false);
+                requestPermissions();
             }
         }
     }
@@ -170,7 +172,7 @@ public class LockSettingsFragment extends Fragment {
         }
 
         int afterCollectionTypeValue = 1;
-        Constants.CollectionType afterCollectionType = Constants.CollectionType.LEARNING;
+        var afterCollectionType = Constants.CollectionType.LEARNING;
         if (view.getId() == R.id.optionChecked) {
             afterCollectionTypeValue = 3;
             afterCollectionType = Constants.CollectionType.CHECKED;
@@ -224,7 +226,7 @@ public class LockSettingsFragment extends Fragment {
         if (!permissionChecker.isRequiredPermissionGranted()) {
             button.setChecked(false);
 
-            Intent intent = permissionChecker.createRequiredPermissionIntent();
+            var intent = permissionChecker.createRequiredPermissionIntent();
             startActivityForResult(intent, PermissionChecker.REQUIRED_PERMISSION_REQUEST_CODE);
         } else {
             if (prefs.useUnconscious().get() != isChecked) {
@@ -269,5 +271,26 @@ public class LockSettingsFragment extends Fragment {
 
         prefs.bgResId().put(resId);
         EventBus.getDefault().post(new UnconsciousTheme(resId));
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private static final int RC_READ_PHONE_STATE = 5001;
+    private static final String[] PERMISSIONS = {Manifest.permission.READ_PHONE_STATE};
+
+    private boolean hasPermissions() {
+        return EasyPermissions.hasPermissions(this.getContext(), PERMISSIONS);
+    }
+
+    private void requestPermissions() {
+        EasyPermissions.requestPermissions(this, getString(R.string.message_permissions_phone), RC_READ_PHONE_STATE, PERMISSIONS);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> list) {
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
     }
 }

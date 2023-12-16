@@ -2,7 +2,6 @@ package com.appskimo.app.hanja.service;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.appskimo.app.hanja.BuildConfig;
@@ -54,7 +53,7 @@ public class VocabService {
 
     public boolean isConnected() {
         if (connectivityManager != null) {
-            NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+            var activeNetwork = connectivityManager.getActiveNetworkInfo();
             return activeNetwork != null && (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI || activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE);
         } else {
             return false;
@@ -105,7 +104,7 @@ public class VocabService {
             }
             callback.onSuccess(categories);
         } catch(Exception e) {
-            if(BuildConfig.DEBUG) {
+            if (BuildConfig.DEBUG) {
                 Log.e(getClass().getName(), e.getMessage(), e);
             }
             callback.onError();
@@ -158,7 +157,7 @@ public class VocabService {
                 callback.onSuccess(null);
             }
         } catch(Exception e) {
-            if(BuildConfig.DEBUG) {
+            if (BuildConfig.DEBUG) {
                 Log.e(getClass().getName(), e.getMessage(), e);
             }
             callback.onError();
@@ -169,11 +168,11 @@ public class VocabService {
 
     @Background
     public void search(String text, Callback<Collection<CategoryWord>> callback) {
-        String likeText = "%".concat(text).concat("%");
+        var likeText = "%".concat(text).concat("%");
         callback.before();
         try {
-            QueryBuilder<CategoryWord, Integer> qb1 = categoryWordDao.queryBuilder();
-            Where<CategoryWord, Integer> where1 = categoryWordDao.queryBuilder().where();
+            var qb1 = categoryWordDao.queryBuilder();
+            var where1 = categoryWordDao.queryBuilder().where();
             Where<CategoryWord, Integer> left = null;
             Where<CategoryWord, Integer> right = null;
             Where<CategoryWord, Integer>[] others = new Where[categoryIds.length - 2];
@@ -188,8 +187,8 @@ public class VocabService {
             }
             qb1.setWhere(where1.or(left, right, others));
 
-            QueryBuilder<Word, Integer> qb2 = wordDao.queryBuilder().orderBy(Word.FIELD_word, true);
-            Where<Word, Integer> where2 = wordDao.queryBuilder().where();
+            var qb2 = wordDao.queryBuilder().orderBy(Word.FIELD_word, true);
+            var where2 = wordDao.queryBuilder().where();
             where2.or(where2.like(Word.FIELD_word, likeText), where2.like(Word.FIELD_means, likeText));
             qb2.setWhere(where2);
 
@@ -211,7 +210,7 @@ public class VocabService {
         try {
             callback.onSuccess(categoryWordDao.queryForId(categoryWordUid));
         } catch(Exception e) {
-            if(BuildConfig.DEBUG) {
+            if (BuildConfig.DEBUG) {
                 Log.e(getClass().getName(), e.getMessage(), e);
             }
             callback.onError();
@@ -222,7 +221,7 @@ public class VocabService {
 
     public List<CategoryWord> getRandomWords(Category category, long size) {
         try {
-            QueryBuilder<CategoryWord, Integer> qb = categoryWordDao.queryBuilder().orderByRaw("RANDOM()").limit(size);
+            var qb = categoryWordDao.queryBuilder().orderByRaw("RANDOM()").limit(size);
             qb.where().eq(Category.FIELD_categoryUid, category.getCategoryUid());
             qb.join(getWordQueryBuilder(Constants.CollectionType.ALL));
             return qb.query();
@@ -247,7 +246,7 @@ public class VocabService {
                 callback.onSuccess(getCategoryWordForFirst(collectionType, true));
             }
         } catch(Exception e) {
-            if(BuildConfig.DEBUG) {
+            if (BuildConfig.DEBUG) {
                 Log.e(getClass().getName(), e.getMessage(), e);
             }
             callback.onError();
@@ -296,7 +295,7 @@ public class VocabService {
             } else if (count == 1) {
                 categoryWord = current;
             } else {
-                QueryBuilder<CategoryWord, Integer> qb = categoryWordDao.queryBuilder().orderByRaw("RANDOM()");
+                var qb = categoryWordDao.queryBuilder().orderByRaw("RANDOM()");
                 qb.where().eq(Category.FIELD_categoryUid, selectedCategory.getCategoryUid());
                 qb.join(getWordQueryBuilder(collectionType));
 
@@ -317,7 +316,7 @@ public class VocabService {
 
     private CategoryWord getCategoryWordForFirst(Constants.CollectionType collectionType, boolean ascending) {
         try {
-            QueryBuilder<CategoryWord, Integer> qb = categoryWordDao.queryBuilder().orderBy(CategoryWord.FIELD_categoryWordUid, ascending);
+            var qb = categoryWordDao.queryBuilder().orderBy(CategoryWord.FIELD_categoryWordUid, ascending);
             qb.where().eq(Category.FIELD_categoryUid, selectedCategory.getCategoryUid());
             return qb.join(getWordQueryBuilder(collectionType)).queryForFirst();
         } catch (SQLException e) {
@@ -330,7 +329,7 @@ public class VocabService {
 
     public long countOf(Constants.CollectionType collectionType) {
         try {
-            QueryBuilder<CategoryWord, Integer> qb1 = categoryWordDao.queryBuilder();
+            var qb1 = categoryWordDao.queryBuilder();
             qb1.where().eq(Category.FIELD_categoryUid, selectedCategory.getCategoryUid());
             return qb1.join(getWordQueryBuilder(collectionType)).countOf();
         } catch (Exception e) {
@@ -343,10 +342,10 @@ public class VocabService {
 
     private CategoryWord findPrevOrNext(Constants.CollectionType collectionType, int categoryWordUid, boolean ascending) {
         try {
-            QueryBuilder<CategoryWord, Integer> qb1 = categoryWordDao.queryBuilder().orderBy(CategoryWord.FIELD_categoryWordUid, ascending);
-            Where<CategoryWord, Integer> where = qb1.where();
-            Where<CategoryWord, Integer> condition1 = where.eq(Category.FIELD_categoryUid, selectedCategory.getCategoryUid());
-            Where<CategoryWord, Integer> condition2 = ascending ? where.gt(CategoryWord.FIELD_categoryWordUid, categoryWordUid) : where.lt(CategoryWord.FIELD_categoryWordUid, categoryWordUid);
+            var qb1 = categoryWordDao.queryBuilder().orderBy(CategoryWord.FIELD_categoryWordUid, ascending);
+            var where = qb1.where();
+            var condition1 = where.eq(Category.FIELD_categoryUid, selectedCategory.getCategoryUid());
+            var condition2 = ascending ? where.gt(CategoryWord.FIELD_categoryWordUid, categoryWordUid) : where.lt(CategoryWord.FIELD_categoryWordUid, categoryWordUid);
             qb1.setWhere(where.and(condition1, condition2));
             return qb1.join(getWordQueryBuilder(collectionType)).queryForFirst();
         } catch (Exception e) {
@@ -358,7 +357,7 @@ public class VocabService {
     }
 
     private QueryBuilder<Word, Integer> getWordQueryBuilder(Constants.CollectionType collectionType) throws SQLException {
-        QueryBuilder<Word, Integer> qb = wordDao.queryBuilder();
+        var qb = wordDao.queryBuilder();
         if (collectionType.isChecked()) {
             qb.where().eq(Word.FIELD_checked, true);
         } else if (collectionType.isMastered()) {
@@ -381,7 +380,7 @@ public class VocabService {
                 callback.onSuccess(getCategoryWordForFirst(checkedCategories, true, collectionType));
             }
         } catch(Exception e) {
-            if(BuildConfig.DEBUG) {
+            if (BuildConfig.DEBUG) {
                 Log.e(getClass().getName(), e.getMessage(), e);
             }
             callback.onError();
@@ -430,7 +429,7 @@ public class VocabService {
             } else if (count == 1) {
                 categoryWord = current;
             } else {
-                QueryBuilder<CategoryWord, Integer> qb = categoryWordDao.queryBuilder().orderByRaw("RANDOM()");
+                var qb = categoryWordDao.queryBuilder().orderByRaw("RANDOM()");
                 qb.setWhere(getCategoryCondition(checkedCategories, qb.where()));
                 if (!collectionType.isAll()) {
                     qb.join(getWordQueryBuilder(collectionType));
@@ -453,7 +452,7 @@ public class VocabService {
 
     public long countOf(Set<String> checkedCategories, Constants.CollectionType collectionType) {
         try {
-            QueryBuilder<CategoryWord, Integer> qb = categoryWordDao.queryBuilder();
+            var qb = categoryWordDao.queryBuilder();
             qb.setWhere(getCategoryCondition(checkedCategories, qb.where()));
             return collectionType.isAll() ? qb.countOf() : qb.join(getWordQueryBuilder(collectionType)).countOf();
         } catch (Exception e) {
@@ -466,7 +465,7 @@ public class VocabService {
 
     private CategoryWord getCategoryWordForFirst(Set<String> checkedCategories, boolean ascending, Constants.CollectionType collectionType) {
         try {
-            QueryBuilder<CategoryWord, Integer> qb = categoryWordDao.queryBuilder().orderBy(CategoryWord.FIELD_categoryWordUid, ascending);
+            var qb = categoryWordDao.queryBuilder().orderBy(CategoryWord.FIELD_categoryWordUid, ascending);
             qb.setWhere(getCategoryCondition(checkedCategories, qb.where()));
             return collectionType.isAll() ? qb.queryForFirst() : qb.join(getWordQueryBuilder(collectionType)).queryForFirst();
         } catch (SQLException e) {
@@ -479,10 +478,10 @@ public class VocabService {
 
     private CategoryWord findPrevOrNext(Set<String> checkedCategories, int categoryWordUid, boolean ascending, Constants.CollectionType collectionType) {
         try {
-            QueryBuilder<CategoryWord, Integer> qb = categoryWordDao.queryBuilder().orderBy(CategoryWord.FIELD_categoryWordUid, ascending);
-            Where<CategoryWord, Integer> where = qb.where();
-            Where<CategoryWord, Integer> condition1 = getCategoryCondition(checkedCategories, where);
-            Where<CategoryWord, Integer> condition2 = ascending ? where.gt(CategoryWord.FIELD_categoryWordUid, categoryWordUid) : where.lt(CategoryWord.FIELD_categoryWordUid, categoryWordUid);
+            var qb = categoryWordDao.queryBuilder().orderBy(CategoryWord.FIELD_categoryWordUid, ascending);
+            var where = qb.where();
+            var condition1 = getCategoryCondition(checkedCategories, where);
+            var condition2 = ascending ? where.gt(CategoryWord.FIELD_categoryWordUid, categoryWordUid) : where.lt(CategoryWord.FIELD_categoryWordUid, categoryWordUid);
             qb.setWhere(where.and(condition1, condition2));
             return collectionType.isAll() ? qb.queryForFirst() : qb.join(getWordQueryBuilder(collectionType)).queryForFirst();
         } catch (Exception e) {
@@ -496,12 +495,12 @@ public class VocabService {
     private Where<CategoryWord, Integer> getCategoryCondition(Set<String> checkedCategories, Where<CategoryWord, Integer> where) throws SQLException {
         Where<CategoryWord, Integer> condition = null;
         if (checkedCategories == null || checkedCategories.size() < 1) {
-            List<Category> categories = getCategories();
-            Category category = categories.get(categories.size() - 1);
+            var categories = getCategories();
+            var category = categories.get(categories.size() - 1);
             condition = where.eq(Category.FIELD_categoryUid, category.getCategoryUid());
 
         } else {
-            String[] categoryIds = new String[checkedCategories.size()];
+            var categoryIds = new String[checkedCategories.size()];
             checkedCategories.toArray(categoryIds);
 
             if (categoryIds.length < 2) {
@@ -534,30 +533,30 @@ public class VocabService {
         callback.before();
         try {
             if (selectedCategory != null) {
-                QueryBuilder<CategoryWord, Integer> qb1 = categoryWordDao.queryBuilder().orderBy(CategoryWord.FIELD_categoryWordUid, true).limit(more.getScale());
+                var qb1 = categoryWordDao.queryBuilder().orderBy(CategoryWord.FIELD_categoryWordUid, true).limit(more.getScale());
                 if (more.getLastId() != null) {
-                    Where<CategoryWord, Integer> where = categoryWordDao.queryBuilder().where();
-                    Where<CategoryWord, Integer> left = where.eq(Category.FIELD_categoryUid, selectedCategory.getCategoryUid());
-                    Where<CategoryWord, Integer> right = where.gt(CategoryWord.FIELD_categoryWordUid, more.getLastId());
+                    var where = categoryWordDao.queryBuilder().where();
+                    var left = where.eq(Category.FIELD_categoryUid, selectedCategory.getCategoryUid());
+                    var right = where.gt(CategoryWord.FIELD_categoryWordUid, more.getLastId());
                     qb1.setWhere(where.and(left, right));
                 } else {
                     qb1.where().eq(Category.FIELD_categoryUid, selectedCategory.getCategoryUid());
                 }
 
-                QueryBuilder<Word, Integer> qb2 = wordDao.queryBuilder();
+                var qb2 = wordDao.queryBuilder();
                 if(collectionType.isChecked()) {
                     qb2.where().eq(Word.FIELD_checked, true);
                 } else {
                     qb2.where().eq(Word.FIELD_completed, collectionType.isMastered());
                 }
 
-                List<CategoryWord> list = qb1.join(qb2).query();
+                var list = qb1.join(qb2).query();
                 more.setContent(list);
 
                 if (list != null && !list.isEmpty()) {
-                    QueryBuilder<CategoryWord, Integer> qb3 = categoryWordDao.queryBuilder().orderBy(CategoryWord.FIELD_categoryWordUid, false);
-                    CategoryWord last = qb3.queryForFirst();
-                    CategoryWord lastContent = list.get(list.size() - 1);
+                    var qb3 = categoryWordDao.queryBuilder().orderBy(CategoryWord.FIELD_categoryWordUid, false);
+                    var last = qb3.queryForFirst();
+                    var lastContent = list.get(list.size() - 1);
                     more.setHasMore(last.getCategoryWordUid().intValue() > lastContent.getCategoryWordUid().intValue());
                 } else {
                     more.setHasMore(false);
@@ -567,7 +566,7 @@ public class VocabService {
             }
 
         } catch(Exception e) {
-            if(BuildConfig.DEBUG) {
+            if (BuildConfig.DEBUG) {
                 Log.e(getClass().getName(), e.getMessage(), e);
             }
             callback.onError();
@@ -581,17 +580,17 @@ public class VocabService {
         callback.before();
         try {
             if (selectedCategory != null) {
-                QueryBuilder<CategoryWord, Integer> qb1 = categoryWordDao.queryBuilder().orderBy(CategoryWord.FIELD_rand, true).limit(more.getScale());
+                var qb1 = categoryWordDao.queryBuilder().orderBy(CategoryWord.FIELD_rand, true).limit(more.getScale());
                 if (more.getLastRand() != null) {
-                    Where<CategoryWord, Integer> where = categoryWordDao.queryBuilder().where();
-                    Where<CategoryWord, Integer> left = where.eq(Category.FIELD_categoryUid, selectedCategory.getCategoryUid());
-                    Where<CategoryWord, Integer> right = where.gt(CategoryWord.FIELD_rand, more.getLastRand());
+                    var where = categoryWordDao.queryBuilder().where();
+                    var left = where.eq(Category.FIELD_categoryUid, selectedCategory.getCategoryUid());
+                    var right = where.gt(CategoryWord.FIELD_rand, more.getLastRand());
                     qb1.setWhere(where.and(left, right));
                 } else {
                     qb1.where().eq(Category.FIELD_categoryUid, selectedCategory.getCategoryUid());
                 }
 
-                QueryBuilder<Word, Integer> qb2 = wordDao.queryBuilder();
+                var qb2 = wordDao.queryBuilder();
                 if(collectionType.isChecked()) {
                     qb2.where().eq(Word.FIELD_checked, true);
                 } else {
@@ -602,9 +601,9 @@ public class VocabService {
                 more.setContent(list);
 
                 if (list != null && !list.isEmpty()) {
-                    QueryBuilder<CategoryWord, Integer> qb3 = categoryWordDao.queryBuilder().orderBy(CategoryWord.FIELD_rand, false);
-                    CategoryWord last = qb3.queryForFirst();
-                    CategoryWord lastContent = list.get(list.size() - 1);
+                    var qb3 = categoryWordDao.queryBuilder().orderBy(CategoryWord.FIELD_rand, false);
+                    var last = qb3.queryForFirst();
+                    var lastContent = list.get(list.size() - 1);
                     more.setHasMore(last.getRand().longValue() > lastContent.getRand().longValue());
                 } else {
                     more.setHasMore(false);
@@ -614,7 +613,7 @@ public class VocabService {
             }
 
         } catch(Exception e) {
-            if(BuildConfig.DEBUG) {
+            if (BuildConfig.DEBUG) {
                 Log.e(getClass().getName(), e.getMessage(), e);
             }
             callback.onError();

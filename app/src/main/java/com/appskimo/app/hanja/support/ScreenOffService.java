@@ -12,6 +12,8 @@ import android.os.Build;
 import android.os.IBinder;
 import android.telephony.TelephonyManager;
 
+import androidx.core.app.NotificationCompat;
+
 import com.appskimo.app.hanja.Constants;
 import com.appskimo.app.hanja.LockActivity_;
 import com.appskimo.app.hanja.R;
@@ -25,8 +27,6 @@ import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.Date;
-
-import androidx.core.app.NotificationCompat;
 
 @EService
 public class ScreenOffService extends Service {
@@ -68,9 +68,9 @@ public class ScreenOffService extends Service {
     }
 
     private PendingIntent createStopIntent() {
-        Intent intent = ScreenOffService_.intent(getApplicationContext()).get();
+        var intent = ScreenOffService_.intent(getApplicationContext()).flags(PendingIntent.FLAG_IMMUTABLE).get();
         intent.setAction(ACTION_STOP_SERVICE);
-        return PendingIntent.getService(getApplicationContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        return PendingIntent.getService(getApplicationContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }
 
     private Notification createNotification(PendingIntent stopIntent) {
@@ -95,7 +95,7 @@ public class ScreenOffService extends Service {
 
     @TargetApi(Build.VERSION_CODES.O)
     private String getNotificationChannel() {
-        NotificationChannel notificationChannel = notificationManager.getNotificationChannel(NOTI_CHANNEL_ID);
+        var notificationChannel = notificationManager.getNotificationChannel(NOTI_CHANNEL_ID);
         if (notificationChannel == null) {
             notificationChannel = new NotificationChannel(NOTI_CHANNEL_ID, getText(R.string.app_name), NotificationManager.IMPORTANCE_MIN);
             notificationChannel.setDescription(getString(R.string.app_name));
@@ -124,12 +124,12 @@ public class ScreenOffService extends Service {
             return;
         }
 
-        LockActivity_.intent(context).flags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
+        LockActivity_.intent(context).flags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP | PendingIntent.FLAG_IMMUTABLE).start();
     }
 
     @Receiver(actions = {TelephonyManager.ACTION_PHONE_STATE_CHANGED}, registerAt = Receiver.RegisterAt.OnCreateOnDestroy)
     void onActionPhoneStateChanged(Intent intent) {
-        String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
+        var state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
         if (TelephonyManager.EXTRA_STATE_OFFHOOK.equals(state) || Intent.ACTION_NEW_OUTGOING_CALL.equals(state) || TelephonyManager.EXTRA_STATE_RINGING.equals(state)) {
             EventBus.getDefault().post(new OnFinishLockscreenActivityAll());
             busyPhone = true;
@@ -142,9 +142,9 @@ public class ScreenOffService extends Service {
 
     public static void start(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(ScreenOffService_.intent(context).get());
+            context.startForegroundService(ScreenOffService_.intent(context).flags(PendingIntent.FLAG_IMMUTABLE).get());
         } else {
-            ScreenOffService_.intent(context).start();
+            ScreenOffService_.intent(context).flags(PendingIntent.FLAG_IMMUTABLE).start();
         }
     }
 }

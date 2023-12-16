@@ -78,7 +78,7 @@ public class ListFragment extends Fragment {
 
     @Click(R.id.reset)
     void onClickReset() {
-        miscService.showAdDialog(getActivity(), R.string.label_reset_confirm, (dialog, i) -> {
+        miscService.showDialog(getActivity(), R.string.label_reset_confirm, (dialog, i) -> {
             if (vocabService != null) {
                 vocabService.reset(new Callback<Void>() {
                     @Override
@@ -120,7 +120,7 @@ public class ListFragment extends Fragment {
         }
 
         public void refreshAll() {
-            for(ListItemsFragment item : items) {
+            for (var item : items) {
                 item.refresh();
             }
         }

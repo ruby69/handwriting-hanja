@@ -3,6 +3,9 @@ package com.appskimo.app.hanja;
 import android.content.Context;
 import android.widget.Toast;
 
+import androidx.multidex.MultiDex;
+import androidx.multidex.MultiDexApplication;
+
 import com.appskimo.app.hanja.service.MiscService;
 import com.appskimo.app.hanja.service.PrefsService_;
 import com.appskimo.app.hanja.support.SQLiteOpenHelper;
@@ -17,9 +20,6 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.greenrobot.eventbus.EventBus;
 
-import androidx.multidex.MultiDex;
-import androidx.multidex.MultiDexApplication;
-
 @EApplication
 public class MainApplication extends MultiDexApplication {
     @Bean MiscService miscService;
@@ -33,7 +33,7 @@ public class MainApplication extends MultiDexApplication {
 
     @Background
     void initializeDatabase() {
-        SQLiteOpenHelper sqliteOpenHelper = new SQLiteOpenHelper(getApplicationContext());
+        var sqliteOpenHelper = new SQLiteOpenHelper(getApplicationContext());
         try {
             sqliteOpenHelper.setPrefs(prefs).getWritableDatabase(); // invoke db initialize method after calling onCreate or onUpgrade.
         } catch (Exception e) {

@@ -5,8 +5,11 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+
 import com.appskimo.app.hanja.R;
-import com.appskimo.app.hanja.domain.Category;
 import com.appskimo.app.hanja.event.CategoryGameSelect;
 import com.appskimo.app.hanja.event.GameNextAction;
 import com.appskimo.app.hanja.service.GameService;
@@ -23,12 +26,6 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.StringRes;
 import org.greenrobot.eventbus.Subscribe;
-
-import java.util.List;
-
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 
 @EFragment(R.layout.fragment_game_menu)
 public class GameMenuFragment extends Fragment {
@@ -62,16 +59,16 @@ public class GameMenuFragment extends Fragment {
     @AfterInject
     void afterInject() {
         miscService.applyFontScale(getActivity());
-        List<Category> categories = gameService.getCategories();
+        var categories = gameService.getCategories();
         titles = new String[categories.size()];
-        for(int i = 0; i< categories.size(); i++) {
+        for (int i = 0; i< categories.size(); i++) {
             titles[i] = categories.get(i).getName();
         }
     }
 
     @AfterViews
     void afterViews() {
-        for(int i = 0; i < titles.length; i++) {
+        for (int i = 0; i < titles.length; i++) {
             CategoryItemView view = CategoryItemView_.build(getActivity());
             view.setTitle(i, titles[i]);
             categoriesLayer.addView(view);
@@ -92,9 +89,9 @@ public class GameMenuFragment extends Fragment {
     @Subscribe
     public void onEvent(CategoryGameSelect event) {
         int position = event.getPosition();
-        List<Category> categories = gameService.getCategories();
+        var categories = gameService.getCategories();
         if (categories != null && !categories.isEmpty() && categories.size() > position) {
-            Category category = categories.get(position);
+            var category = categories.get(position);
             categoryLabel.setText(selectCategoryLabel + " : " + category.getName());
             getActivity().getIntent().putExtra("selectCategoryPosition", position);
         }

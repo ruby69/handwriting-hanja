@@ -55,7 +55,7 @@ public class WordListRecyclerViewAdapter extends CommonRecyclerViewAdapter<Categ
     }
 
     private CategoryWord findByCategoryWordUid(int categoryWordUid) {
-        for (CategoryWord item : items) {
+        for (var item : items) {
             if (categoryWordUid == item.getCategoryWordUid().intValue()) {
                 return item;
             }
@@ -65,7 +65,7 @@ public class WordListRecyclerViewAdapter extends CommonRecyclerViewAdapter<Categ
 
     @UiThread
     public void updateCheckByCategoryWordUid(int categoryWordUid, boolean checked) {
-        CategoryWord categoryWord = findByCategoryWordUid(categoryWordUid);
+        var categoryWord = findByCategoryWordUid(categoryWordUid);
         if (categoryWord != null) {
             Word word = categoryWord.getWord();
             word.setChecked(checked);
@@ -75,9 +75,9 @@ public class WordListRecyclerViewAdapter extends CommonRecyclerViewAdapter<Categ
 
     @UiThread
     public void updateCompleteByCategoryWordUid(int categoryWordUid, boolean completec) {
-        CategoryWord categoryWord = findByCategoryWordUid(categoryWordUid);
+        var categoryWord = findByCategoryWordUid(categoryWordUid);
         if (categoryWord != null) {
-            Word word = categoryWord.getWord();
+            var word = categoryWord.getWord();
             word.setCompleted(completec);
 
             int position = findPosition(categoryWordUid);

@@ -2,6 +2,12 @@ package com.appskimo.app.hanja.ui.frags;
 
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.appskimo.app.hanja.Constants;
 import com.appskimo.app.hanja.R;
 import com.appskimo.app.hanja.domain.Callback;
@@ -23,12 +29,6 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.IntegerRes;
 import org.greenrobot.eventbus.Subscribe;
-
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 @EFragment(R.layout.fragment_list_items)
 public class ListItemsFragment extends Fragment {
@@ -101,22 +101,19 @@ public class ListItemsFragment extends Fragment {
         }
     }
 
-    private final SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
-        @Override
-        public void onRefresh() {
-            if (refreshLayout != null) {
-                refreshLayout.setRefreshing(true);
-            }
+    private final SwipeRefreshLayout.OnRefreshListener refreshListener = () -> {
+        if (refreshLayout != null) {
+            refreshLayout.setRefreshing(true);
+        }
 
-            if (vocabService != null) {
-                vocabService.retrieve(new More(), collectionType, new Callback<More>() {
-                    @Override
-                    public void onSuccess(More more) {
-                        currentMore = more;
-                        refreshWords(more);
-                    }
-                });
-            }
+        if (vocabService != null) {
+            vocabService.retrieve(new More(), collectionType, new Callback<More>() {
+                @Override
+                public void onSuccess(More more) {
+                    currentMore = more;
+                    refreshWords(more);
+                }
+            });
         }
     };
 

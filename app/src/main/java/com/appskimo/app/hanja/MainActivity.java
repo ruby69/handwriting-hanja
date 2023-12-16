@@ -1,5 +1,7 @@
 package com.appskimo.app.hanja;
 
+import android.Manifest;
+import android.app.PendingIntent;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -47,7 +49,6 @@ import com.appskimo.app.hanja.ui.frags.SearchFragment;
 import com.appskimo.app.hanja.ui.frags.SearchFragment_;
 import com.appskimo.app.hanja.ui.view.FontScaleView_;
 import com.appskimo.app.hanja.ui.view.WritingPadView;
-import com.crashlytics.android.Crashlytics;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.navigation.NavigationView;
@@ -68,11 +69,12 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.fabric.sdk.android.Fabric;
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
 
 @Fullscreen
 @EActivity(R.layout.activity_main)
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, EasyPermissions.PermissionCallbacks {
     private static final int POSITION_LIST = 0;
     private static final int POSITION_SEARCH = 1;
     private static final int POSITION_LOCK_SETTINGS = 2;
@@ -100,15 +102,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private LinkDialog linkDialog = new LinkDialog();
 
     private String currentQuery = "";
-    private FirebaseAnalytics firebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(!BuildConfig.DEBUG) {
-            firebaseAnalytics = FirebaseAnalytics.getInstance(this);
-            Fabric.with(this, new Crashlytics());
+            FirebaseAnalytics.getInstance(this);
         }
+
         getLifecycle().addObserver(new EventBusObserver.AtCreateDestroy(this));
         pagerAdapter = new PagerAdapter(getSupportFragmentManager());
 
@@ -155,7 +156,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mainViewPager.setAdapter(pagerAdapter);
         initBottomSheet();
-        miscService.initializeMobileAds();
     }
 
     private void initCheckKanjiNotice() {
@@ -182,13 +182,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @UiThread
     void initSpinner(final Menu menu, final List<Category> categories) {
-        String [] titles = new String[categories.size()];
+        var titles = new String[categories.size()];
         int index = 0;
         for(Category category : categories) {
             titles[index++] = category.getName();
         }
 
-        ArrayAdapter<CharSequence> adapter = new ArrayAdapter(MainActivity.this, R.layout.view_spinner, titles);
+        var adapter = new ArrayAdapter(MainActivity.this, R.layout.view_spinner, titles);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinner = (Spinner) MenuItemCompat.getActionView(menu.findItem(R.id.spinner));
@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         @Override
         public void onItemSelected(AdapterView<?> adapter, View v, int position, long id) {
             if (count++ > 2) {
-                miscService.showAdDialog(MainActivity.this, R.string.label_keep_going, (dialog, i) -> {});
+                miscService.showDialog(MainActivity.this, R.string.label_keep_going, (dialog, i) -> {});
             }
             vocabService.selectCategory(position);
         }
@@ -214,9 +214,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     private void initSearchView(Menu menu) {
-        final MenuItem searchItem = menu.findItem(R.id.search);
-        final MenuItem spinnerItem = menu.findItem(R.id.spinner);
-        MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
+        final var searchItem = menu.findItem(R.id.search);
+        final var spinnerItem = menu.findItem(R.id.spinner);
+        searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
                 spinnerItem.setVisible(false);
@@ -241,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        final SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -265,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void initNavigationDrawer() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(null);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.app_name, R.string.app_name);
+        var toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.app_name, R.string.app_name);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -274,7 +274,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void initBottomSheet() {
         bottomSheetBehavior = BottomSheetBehavior.from(writingPad);
-        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+        bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 if (newState == BottomSheetBehavior.STATE_DRAGGING) {
@@ -304,21 +304,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             prevPosition = POSITION_LIST;
 
         } else if (id == R.id.menuLockscreen) {
-            boolean useLockscreen = prefs.useLockScreen().get();
-            if (useLockscreen) {
-                miscService.showAdDialog(this, R.string.label_onlock_start, (dialog, i) -> OnActivity_.intent(this).start());
-            } else {
-                AlertDialog alertDialog = new AlertDialog.Builder(this)
-                        .setMessage(R.string.message_confirm_lockscreen)
-                        .setPositiveButton(R.string.label_confirm, (dialogInterface, i) -> {
-                            prefs.useLockScreen().put(true);
-                            OnActivity_.intent(MainActivity.this).start();
-                            ScreenOffService_.start(MainActivity.this);
-                        }).create();
+            if (hasPermissions()) {
+                boolean useLockscreen = prefs.useLockScreen().get();
+                if (useLockscreen) {
+                    miscService.showDialog(this, R.string.label_onlock_start, (dialog, i) -> OnActivity_.intent(this).flags(PendingIntent.FLAG_IMMUTABLE).start());
+                } else {
+                    var alertDialog = new AlertDialog.Builder(this)
+                            .setMessage(R.string.message_confirm_lockscreen)
+                            .setPositiveButton(R.string.label_confirm, (dialogInterface, i) -> {
+                                prefs.useLockScreen().put(true);
+                                OnActivity_.intent(MainActivity.this).flags(PendingIntent.FLAG_IMMUTABLE).start();
+                                ScreenOffService_.start(MainActivity.this);
+                            }).create();
 
-                if (!this.isFinishing()) {
-                    alertDialog.show();
+                    if (!this.isFinishing()) {
+                        alertDialog.show();
+                    }
                 }
+            } else {
+                requestPermissions();
             }
 
         } else if (id == R.id.menuLockscreenSettings) {
@@ -329,7 +333,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             drawerLayout.closeDrawer(GravityCompat.START);
 
         } else if (id == R.id.menuGames) {
-            miscService.showAdDialog(this, R.string.label_game, (dialog, i) -> GameActivity_.intent(this).start());
+            GameActivity_.intent(this).flags(PendingIntent.FLAG_IMMUTABLE).start();
 
         } else if (id == R.id.fontScale) {
             fontScaleDialog = new AlertDialog.Builder(this).setTitle(R.string.label_font_scale).setView(FontScaleView_.build(this)).create();
@@ -356,7 +360,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (fontScaleDialog != null && fontScaleDialog.isShowing()) {
             fontScaleDialog.dismiss();
         }
-        LauncherActivity_.intent(this).start();
+        LauncherActivity_.intent(this).flags(PendingIntent.FLAG_IMMUTABLE).start();
         finish();
     }
 
@@ -405,7 +409,42 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return;
         }
 
-        miscService.showAdDialog(this, R.string.label_finish, (dialog, i) -> finish());
+        miscService.showDialog(this, R.string.label_finish, (dialog, i) -> finish());
     }
 
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.clear();
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private static final int RC_READ_PHONE_STATE = 5001;
+    private static final String[] PERMISSIONS = {Manifest.permission.READ_PHONE_STATE};
+
+    private boolean hasPermissions() {
+        return EasyPermissions.hasPermissions(this, PERMISSIONS);
+    }
+
+    private void requestPermissions() {
+        EasyPermissions.requestPermissions(this, getString(R.string.message_permissions_phone), RC_READ_PHONE_STATE, PERMISSIONS);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> list) {
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            new AppSettingsDialog.Builder(this).build().show();
+        }
+    }
 }

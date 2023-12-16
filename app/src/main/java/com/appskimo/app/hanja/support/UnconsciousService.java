@@ -13,6 +13,8 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.core.app.NotificationCompat;
+
 import com.appskimo.app.hanja.BuildConfig;
 import com.appskimo.app.hanja.Constants;
 import com.appskimo.app.hanja.R;
@@ -37,8 +39,6 @@ import org.androidannotations.ormlite.annotations.OrmLiteDao;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
-
-import androidx.core.app.NotificationCompat;
 
 @EService
 public class UnconsciousService extends Service {
@@ -115,7 +115,7 @@ public class UnconsciousService extends Service {
     void runUnconsciousLearning() {
         try {
             while(runUnconsciousLearning) {
-                CategoryWord categoryWord = getWordByRandom();
+                var categoryWord = getWordByRandom();
                 if (categoryWord == null) {
                     toast(R.string.message_no_words);
                     runUnconsciousLearning = false;
@@ -142,9 +142,9 @@ public class UnconsciousService extends Service {
     }
 
     private PendingIntent createStopIntent() {
-        Intent intent = UnconsciousService_.intent(getApplicationContext()).get();
+        var intent = UnconsciousService_.intent(getApplicationContext()).flags(PendingIntent.FLAG_IMMUTABLE).get();
         intent.setAction(ACTION_STOP_SERVICE);
-        return PendingIntent.getService(getApplicationContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        return PendingIntent.getService(getApplicationContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }
 
     private Notification createNotification(PendingIntent stopIntent) {
@@ -169,7 +169,7 @@ public class UnconsciousService extends Service {
 
     @TargetApi(Build.VERSION_CODES.O)
     private String getNotificationChannel() {
-        NotificationChannel notificationChannel = notificationManager.getNotificationChannel(NOTI_CHANNEL_ID);
+        var notificationChannel = notificationManager.getNotificationChannel(NOTI_CHANNEL_ID);
         if (notificationChannel == null) {
             notificationChannel = new NotificationChannel(NOTI_CHANNEL_ID, getText(R.string.label_unconscious), NotificationManager.IMPORTANCE_MIN);
             notificationChannel.setDescription(getString(R.string.label_unconscious));
@@ -187,18 +187,13 @@ public class UnconsciousService extends Service {
         Toast.makeText(getApplicationContext(), resId, Toast.LENGTH_LONG).show();
     }
 
-
-
-
-
-
     private CategoryWord getWordByRandom() {
         try {
-            QueryBuilder<CategoryWord, Integer> qb = categoryWordDao.queryBuilder().orderByRaw("RANDOM()");
+            var qb = categoryWordDao.queryBuilder().orderByRaw("RANDOM()");
             qb.setWhere(getCategoryCondition(checkedCategories, qb.where()));
             return collectionType.isAll() ? qb.queryForFirst() : qb.join(getWordQueryBuilder(collectionType)).queryForFirst();
         } catch (SQLException e) {
-            if(BuildConfig.DEBUG) {
+            if (BuildConfig.DEBUG) {
                 Log.e(getClass().getName(), e.getMessage(), e);
             }
             return null;
@@ -208,12 +203,12 @@ public class UnconsciousService extends Service {
     private Where<CategoryWord, Integer> getCategoryCondition(Set<String> checkedCategories, Where<CategoryWord, Integer> where) throws SQLException {
         Where<CategoryWord, Integer> condition = null;
         if (checkedCategories == null || checkedCategories.size() < 1) {
-            List<Category> categories = getCategories();
-            Category category = categories.get(categories.size() - 1);
+            var categories = getCategories();
+            var category = categories.get(categories.size() - 1);
             condition = where.eq(Category.FIELD_categoryUid, category.getCategoryUid());
 
         } else {
-            String[] categoryIds = new String[checkedCategories.size()];
+            var categoryIds = new String[checkedCategories.size()];
             checkedCategories.toArray(categoryIds);
 
             if (categoryIds.length < 2) {
@@ -247,7 +242,7 @@ public class UnconsciousService extends Service {
     }
 
     private QueryBuilder<Word, Integer> getWordQueryBuilder(Constants.CollectionType collectionType) throws SQLException {
-        QueryBuilder<Word, Integer> qb = wordDao.queryBuilder();
+        var qb = wordDao.queryBuilder();
         if (collectionType.isChecked()) {
             qb.where().eq(Word.FIELD_checked, true);
         } else if (collectionType.isMastered()) {
@@ -262,9 +257,9 @@ public class UnconsciousService extends Service {
 
     public static void start(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(UnconsciousService_.intent(context).get());
+            context.startForegroundService(UnconsciousService_.intent(context).flags(PendingIntent.FLAG_IMMUTABLE).get());
         } else {
-            UnconsciousService_.intent(context).start();
+            UnconsciousService_.intent(context).flags(PendingIntent.FLAG_IMMUTABLE).start();
         }
     }
 }

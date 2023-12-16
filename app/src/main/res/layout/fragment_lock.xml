@@ -56,26 +56,6 @@
     android:textColor="@color/grey_light"/>
 
   <RelativeLayout
-    android:id="@+id/adLayer2"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_below="@+id/wordViewLayer"
-    android:layout_alignParentEnd="true"
-    android:layout_marginTop="@dimen/spacing_4x"
-    android:layout_marginEnd="@dimen/spacing_2x"
-    android:visibility="gone">
-
-    <com.google.android.gms.ads.AdView
-      android:id="@+id/adBanner2"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_centerInParent="true"
-      app:adSize="MEDIUM_RECTANGLE"
-      app:adUnitId="@string/admob_banner_unit_id" />
-
-  </RelativeLayout>
-
-  <RelativeLayout
     android:id="@+id/swipeLayer"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"

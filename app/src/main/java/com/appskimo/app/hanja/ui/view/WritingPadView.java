@@ -1,9 +1,7 @@
 package com.appskimo.app.hanja.ui.view;
 
 import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.res.Configuration;
 import android.graphics.Matrix;
 import android.graphics.Path;
@@ -11,7 +9,6 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -176,10 +173,7 @@ public class WritingPadView extends RelativeLayout {
                 }
             }
         });
-
-
     }
-
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -225,8 +219,6 @@ public class WritingPadView extends RelativeLayout {
             showOrHide(showMeans, meansView);
             showOrHide(showMeans, infoView);
             showHideSwipe();
-
-            checkAd();
         }
     }
 
@@ -239,36 +231,6 @@ public class WritingPadView extends RelativeLayout {
             return false;
         }
     }
-
-    private int touchCount = 0;
-    private int checkCount = 4;
-    private void checkAd() {
-        if (countForAd()) {
-            miscService.showAdDialog(getActivity(), false, R.string.label_keep_going, (dialog, i) -> {});
-        }
-    }
-
-    private boolean countForAd() {
-        boolean b = touchCount++ % checkCount == 0 && touchCount > 1;
-        if (b) {
-            touchCount = 0;
-            checkCount++;
-        }
-        return b;
-    }
-
-    private Activity getActivity() {
-        Context context = getContext();
-        while (context instanceof ContextWrapper) {
-            if (context instanceof Activity) {
-                return (Activity)context;
-            }
-            context = ((ContextWrapper)context).getBaseContext();
-        }
-        return null;
-    }
-
-
 
     //////////////////////////////////////////////////////////////////////////////////////////////// bottom navigation actions
 
@@ -350,22 +312,14 @@ public class WritingPadView extends RelativeLayout {
         if (selected) {
             labelView.setTextColor(greyLight);
             labelView.setBackgroundResource(R.drawable.options_label_bg_sel);
-            fab.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimaryLight));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                fab.setImageDrawable(getResources().getDrawable(selectedResId, getContext().getTheme()));
-            } else {
-                fab.setImageDrawable(getResources().getDrawable(selectedResId));
-            }
+            fab.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimaryLight, getContext().getTheme()));
+            fab.setImageDrawable(getResources().getDrawable(selectedResId, getContext().getTheme()));
 
         } else {
             labelView.setTextColor(grey);
             labelView.setBackgroundResource(R.drawable.options_label_bg_unsel);
-            fab.setBackgroundTintList(getResources().getColorStateList(R.color.grey_light));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                fab.setImageDrawable(getResources().getDrawable(unSelectedResId, getContext().getTheme()));
-            } else {
-                fab.setImageDrawable(getResources().getDrawable(unSelectedResId));
-            }
+            fab.setBackgroundTintList(getResources().getColorStateList(R.color.grey_light, getContext().getTheme()));
+            fab.setImageDrawable(getResources().getDrawable(unSelectedResId, getContext().getTheme()));
         }
     }
 

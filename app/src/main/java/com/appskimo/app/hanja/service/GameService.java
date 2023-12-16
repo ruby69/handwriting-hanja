@@ -44,7 +44,7 @@ public class GameService {
     }
 
     private GameRecord getGameRecord() {
-        GameRecord gameRecord = new GameRecord();
+        var gameRecord = new GameRecord();
 
         gameRecord.setGameId(1);
         gameRecord.setCategory(currentSession.getCategory());
@@ -74,8 +74,8 @@ public class GameService {
     public void initializeSession(int position, int count, long hintDelay) {
         currentSession = new Session();
 
-        Category category = getCategories().get(position);
-        List<CategoryWord> words = vocabService.getRandomWords(category, count);
+        var category = getCategories().get(position);
+        var words = vocabService.getRandomWords(category, count);
 
         currentSession.setCategory(category);
         currentSession.setWords(words);
@@ -86,18 +86,18 @@ public class GameService {
     }
 
     public void initBoard(List<TextView> buttons) {
-        List<CategoryWord> words = currentSession.getWords();
-        List<CategoryWord> usedWords = currentSession.getUsedWords();
-        List<CategoryWord> remainWords = currentSession.getRemainWords();
+        var words = currentSession.getWords();
+        var usedWords = currentSession.getUsedWords();
+        var remainWords = currentSession.getRemainWords();
 
         int size = words.size();
-        if(size > buttons.size()) {
+        if (size > buttons.size()) {
             size = buttons.size();
         }
 
-        for(int i = 0; i<size; i++) {
-            CategoryWord word = getWord(i);
-            TextView button = buttons.get(i);
+        for (int i = 0; i<size; i++) {
+            var word = getWord(i);
+            var button = buttons.get(i);
             button.setText(word.getWord().getWord());
             button.setTag(word);
 
@@ -107,8 +107,8 @@ public class GameService {
     }
 
     public CategoryWord getWord(int position) {
-        List<CategoryWord> words = currentSession.getWords();
-        if(words.size() > position) {
+        var words = currentSession.getWords();
+        if (words.size() > position) {
             return words.get(position);
         } else {
             return null;
@@ -198,7 +198,7 @@ public class GameService {
     }
 
     public CategoryWord getRemovedCurrentWord() {
-        CategoryWord word = currentSession.getWords().remove(0);
+        var word = currentSession.getWords().remove(0);
         currentSession.setCurrentWord(word);
         return word;
     }
@@ -213,21 +213,19 @@ public class GameService {
 
     public synchronized void processCombo(long currentTouchedTime){
         boolean isCombo = currentTouchedTime - currentSession.getLastTouchedTime() < 1500L;
-        if(isCombo){
+        if (isCombo){
             currentSession.increaseComboCount();
-        }else{
+        } else {
             currentSession.resetComboCount();
         }
     }
 
     public synchronized void processScore(long currentTouchedTime) {
         long addedValue = Session.SCORE_BASE;
-
         long timeGap = currentTouchedTime - currentSession.getLastTouchedTime();
-
         long hintDelay = currentSession.getSelectedHintDelay();
-        if(hintDelay == 3000L) {
-            if(timeGap < 501L) {
+        if (hintDelay == 3000L) {
+            if (timeGap < 501L) {
                 addedValue -= 0;
             } else if(timeGap < 1001L) {
                 addedValue -= 2;

@@ -1,9 +1,13 @@
 package com.appskimo.app.hanja;
 
+import static com.google.common.util.concurrent.MoreExecutors.directExecutor;
+
+import android.app.PendingIntent;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyCallback;
 import android.telephony.TelephonyManager;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -12,6 +16,7 @@ import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.appskimo.app.hanja.event.OnFinishLockscreenActivityAll;
@@ -21,7 +26,6 @@ import com.appskimo.app.hanja.service.MiscService;
 import com.appskimo.app.hanja.service.PrefsService_;
 import com.appskimo.app.hanja.service.VocabService;
 import com.appskimo.app.hanja.support.EventBusObserver;
-import com.crashlytics.android.Crashlytics;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.androidannotations.annotations.AfterInject;
@@ -38,8 +42,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Date;
-
-import io.fabric.sdk.android.Fabric;
 
 @Fullscreen
 @EActivity(R.layout.activity_lock)
@@ -62,20 +64,33 @@ public class LockActivity extends AppCompatActivity {
         }
     };
 
+    @RequiresApi(api = Build.VERSION_CODES.S)
+    private TelephonyCallback telephonyCallback = new TelephoneCallStateListener();
+
+    @RequiresApi(api = Build.VERSION_CODES.S)
+    private class TelephoneCallStateListener extends TelephonyCallback implements TelephonyCallback.CallStateListener {
+        @Override
+        public void onCallStateChanged(int state) {
+            if (state == TelephonyManager.CALL_STATE_RINGING || state == TelephonyManager.CALL_STATE_OFFHOOK) {
+                finish();
+            }
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(!BuildConfig.DEBUG) {
+            FirebaseAnalytics.getInstance(this);
+        }
+
+        registerTelephonyCallback();
         getLifecycle().addObserver(new EventBusObserver.AtCreateDestroy(this));
 
-        if (Build.VERSION.SDK_INT > 26) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
             setShowWhenLocked(true);
         } else {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-        }
-
-        if (!BuildConfig.DEBUG) {
-            FirebaseAnalytics.getInstance(this);
-            Fabric.with(this, new Crashlytics());
         }
     }
 
@@ -96,8 +111,15 @@ public class LockActivity extends AppCompatActivity {
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
         EventBus.getDefault().post(new OnLockActivity());
+    }
+
+    private void registerTelephonyCallback() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            telephonyManager.registerTelephonyCallback(directExecutor(), telephonyCallback);
+        } else {
+            telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+        }
     }
 
     @AfterInject
@@ -107,13 +129,12 @@ public class LockActivity extends AppCompatActivity {
 
     @AfterViews
     void afterViews() {
-        miscService.initializeMobileAds();
         initClock();
     }
 
     private void initClock() {
         if(prefs.useClock().getOr(true)) {
-            final RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) clock.getLayoutParams();
+            final var params = (RelativeLayout.LayoutParams) clock.getLayoutParams();
 
             params.leftMargin = prefs.clockPosX().getOr(0);
             params.topMargin = prefs.clockPosY().getOr(0);
@@ -162,12 +183,12 @@ public class LockActivity extends AppCompatActivity {
 
     @Click(R.id.menu)
     void onClickMenu() {
-        LauncherActivity_.intent(this).start();
+        LauncherActivity_.intent(this).flags(PendingIntent.FLAG_IMMUTABLE).start();
     }
 
     @Click(R.id.lockOff)
     void onClickLockOff() {
-        miscService.showAdDialog(this, R.string.label_lock_off, (dialog, i) -> {
+        miscService.showDialog(this, R.string.label_lock_off, (dialog, i) -> {
             prefs.lockOffTime().put(new Date().getTime());
             finish();
         });

@@ -2,14 +2,15 @@ package com.appskimo.app.hanja.ui.frags;
 
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.appskimo.app.hanja.Constants;
 import com.appskimo.app.hanja.R;
@@ -21,9 +22,7 @@ import com.appskimo.app.hanja.service.PrefsService_;
 import com.appskimo.app.hanja.service.VocabService;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.ebanx.swipebtn.OnActiveListener;
 import com.ebanx.swipebtn.SwipeButton;
-import com.google.android.gms.ads.AdView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.androidannotations.annotations.AfterInject;
@@ -38,10 +37,6 @@ import org.androidannotations.annotations.res.ColorRes;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import java.util.Set;
-
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 
 @EFragment(R.layout.fragment_lock)
 public class LockFragment extends Fragment {
@@ -60,9 +55,6 @@ public class LockFragment extends Fragment {
     @ViewById(R.id.masterOrLearning) Button masterOrLearning;
     @ViewById(R.id.check) Button check;
     @ViewById(R.id.optionsLayer) View optionsLayer;
-    @ViewById(R.id.adLayer2) View adLayer2;
-    @ViewById(R.id.adBanner2) AdView adBanner2;
-
     @Bean VocabService vocabService;
     @Bean MiscService miscService;
     @Pref PrefsService_ prefs;
@@ -105,24 +97,16 @@ public class LockFragment extends Fragment {
         options(showWord, showWordButton, showWordLabel, R.drawable.ic_assignment_white_24dp, R.drawable.ic_assignment_black_24dp);
         options(showMeans, showMeansButton, showMeansLabel, R.drawable.ic_description_white_24dp, R.drawable.ic_description_black_24dp);
 
-        swipe.setOnActiveListener(new OnActiveListener() {
-            @Override
-            public void onActive() {
-                YoYo.with(Techniques.FadeOut).duration(300).playOn(swipe);
-                optionsLayer.setVisibility(View.VISIBLE);
-                if (!showWord) {
-                    showOrHide(true, wordViewLayer, Techniques.SlideInRight, 500L);
-                }
-                if (!showMeans) {
-                    showOrHide(true, meansView, Techniques.FadeInLeft, 1000L);
-                }
-
-                if (adLayer2.getVisibility() != View.GONE) {
-                    adLayer2.setVisibility(View.GONE);
-                }
+        swipe.setOnActiveListener(() -> {
+            YoYo.with(Techniques.FadeOut).duration(300).playOn(swipe);
+            optionsLayer.setVisibility(View.VISIBLE);
+            if (!showWord) {
+                showOrHide(true, wordViewLayer, Techniques.SlideInRight, 500L);
+            }
+            if (!showMeans) {
+                showOrHide(true, meansView, Techniques.FadeInLeft, 1000L);
             }
         });
-        miscService.loadBannerAdView(adBanner2);
     }
 
     @Override
@@ -157,31 +141,13 @@ public class LockFragment extends Fragment {
             showOrHide(showMeans, meansView, Techniques.FadeInLeft, 1000L);
             showHideSwipe();
             showMasterOrLearning();
-            checkAd();
         } else {
             prefs.categoryWordUid().put(0);
-            FragmentActivity activity = getActivity();
+            var activity = getActivity();
             if(activity != null) {
                 activity.finish();
             }
         }
-    }
-
-    private int touchCount = 0;
-    private int checkCount = 4;
-    private void checkAd() {
-        if (!showMeans && showWord && adLayer2.getVisibility() != View.VISIBLE && countForAd()) {
-            adLayer2.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private boolean countForAd() {
-        boolean b = touchCount++ % checkCount == 0 && touchCount > 1;
-        if (b) {
-            touchCount = 0;
-            checkCount++;
-        }
-        return b;
     }
 
     @UiThread
@@ -230,7 +196,6 @@ public class LockFragment extends Fragment {
         options(showWord, showWordButton, showWordLabel, R.drawable.ic_assignment_white_24dp, R.drawable.ic_assignment_black_24dp);
         showOrHide(showWord, wordViewLayer);
         showHideSwipe();
-        adLayer2.setVisibility(View.GONE);
     }
 
     @Click(R.id.showMeans)
@@ -240,29 +205,20 @@ public class LockFragment extends Fragment {
         options(showMeans, showMeansButton, showMeansLabel, R.drawable.ic_description_white_24dp, R.drawable.ic_description_black_24dp);
         showOrHide(showMeans, meansView);
         showHideSwipe();
-        adLayer2.setVisibility(View.GONE);
     }
 
     private void options(boolean selected, FloatingActionButton fab, TextView labelView, int selectedResId, int unSelectedResId) {
         if (selected) {
             labelView.setTextColor(greyLight);
             labelView.setBackgroundResource(R.drawable.options_label_bg_sel);
-            fab.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimaryLight));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                fab.setImageDrawable(getResources().getDrawable(selectedResId, getActivity().getTheme()));
-            } else {
-                fab.setImageDrawable(getResources().getDrawable(selectedResId));
-            }
+            fab.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimaryLight, getActivity().getTheme()));
+            fab.setImageDrawable(getResources().getDrawable(selectedResId, getActivity().getTheme()));
 
         } else {
             labelView.setTextColor(grey);
             labelView.setBackgroundResource(R.drawable.options_label_bg_unsel);
-            fab.setBackgroundTintList(getResources().getColorStateList(R.color.grey_light));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                fab.setImageDrawable(getResources().getDrawable(unSelectedResId, getActivity().getTheme()));
-            } else {
-                fab.setImageDrawable(getResources().getDrawable(unSelectedResId));
-            }
+            fab.setBackgroundTintList(getResources().getColorStateList(R.color.grey_light, getActivity().getTheme()));
+            fab.setImageDrawable(getResources().getDrawable(unSelectedResId, getActivity().getTheme()));
         }
     }
 
@@ -344,7 +300,7 @@ public class LockFragment extends Fragment {
     }
 
     private void setTextViewDrawableColor(TextView textView, int color) {
-        for (Drawable drawable : textView.getCompoundDrawables()) {
+        for (var drawable : textView.getCompoundDrawables()) {
             if (drawable != null) {
                 drawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
             }

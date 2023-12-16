@@ -22,7 +22,7 @@ import com.appskimo.app.hanja.ui.frags.GameMenuFragment;
 import com.appskimo.app.hanja.ui.frags.GameMenuFragment_;
 import com.appskimo.app.hanja.ui.frags.GamePlayFragment;
 import com.appskimo.app.hanja.ui.frags.GamePlayFragment_;
-import com.google.android.gms.ads.AdView;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
@@ -41,7 +41,6 @@ import java.util.List;
 @EActivity(R.layout.activity_game)
 public class GameActivity extends AppCompatActivity {
     @ViewById(R.id.viewPager) ViewPager viewPager;
-    @ViewById(R.id.adBanner) AdView adBanner;
 
     @Pref PrefsService_ prefs;
 
@@ -68,6 +67,9 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(!BuildConfig.DEBUG) {
+            FirebaseAnalytics.getInstance(this);
+        }
         getLifecycle().addObserver(new EventBusObserver.AtCreateDestroy(this));
     }
 
@@ -80,7 +82,6 @@ public class GameActivity extends AppCompatActivity {
     void afterViews() {
         pagerAdapter = new PagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
-        miscService.loadBannerAdView(adBanner);
     }
 
     @Subscribe
@@ -122,7 +123,7 @@ public class GameActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Fragment fragment = pagerAdapter.getItem(viewPager.getCurrentItem());
+        var fragment = pagerAdapter.getItem(viewPager.getCurrentItem());
         if (fragment instanceof GamePlayFragment) {
             if (gameService.isReady()) {
                 gameService.cancelSession();
@@ -130,13 +131,18 @@ public class GameActivity extends AppCompatActivity {
 
             } else if (gameService.isPlaying()) {
                 gamePlayFragment.pauseSession();
-                miscService.showAdDialog(this, R.string.label_game_pause, R.string.label_game_quit, quitListener, R.string.label_game_resume, resumeListener);
+                miscService.showDialog(this, R.string.label_game_pause, R.string.label_game_quit, quitListener, R.string.label_game_resume, resumeListener);
             }
         } else if (fragment instanceof GameHistoryFragment) {
             viewPager.setCurrentItem(0, false);
 
         } else {
-            miscService.showAdDialog(this, R.string.label_game_finish, (dialog, i) -> finish());
+            miscService.showDialog(this, R.string.label_game_finish, (dialog, i) -> finish());
         }
+    }
+
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.clear();
     }
 }

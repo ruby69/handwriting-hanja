@@ -5,6 +5,7 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import lombok.Data;
@@ -50,7 +51,7 @@ public class Word implements Serializable {
     }
 
     public String getMeansForList() {
-        String value = getMeans().split(",")[0];
+        var value = getMeans().split(",")[0];
         int i = value.indexOf("(");
         return (i > 0) ? value.substring(0, i) : value;
     }
@@ -60,8 +61,8 @@ public class Word implements Serializable {
     }
 
     public String getMeaningForTts() {
-        String str = getMeansForList();
-        String result = str + ". ";
+        var str = getMeansForList();
+        var result = str + ". ";
 
         int i = str.lastIndexOf(" ");
         if (i > 0) {
@@ -80,10 +81,8 @@ public class Word implements Serializable {
         if (pathList == null) {
             pathList = new ArrayList<>();
 
-            String[] temp = path.split(";");
-            for (String pa : temp[0].split("[|]")) {
-                pathList.add(pa);
-            }
+            var temp = path.split(";");
+            pathList.addAll(Arrays.asList(temp[0].split("[|]")));
         }
         return pathList;
     }
@@ -92,8 +91,8 @@ public class Word implements Serializable {
         if (orderList == null) {
             orderList = new ArrayList<>();
 
-            String[] temp = path.split(";");
-            String[] split = temp[1].split("[|]");
+            var temp = path.split(";");
+            var split = temp[1].split("[|]");
             for (int i = 0; i<split.length; i++) {
                 orderList.add(new OrderPoint(i + 1, split[i]));
             }
@@ -109,9 +108,9 @@ public class Word implements Serializable {
 
         public OrderPoint(int order, String str) {
             this.order = order;
-            String[] temp = str.split(",");
-            x = Float.valueOf(temp[0]);
-            y = Float.valueOf(temp[1]);
+            var temp = str.split(",");
+            x = Float.parseFloat(temp[0]);
+            y = Float.parseFloat(temp[1]);
         }
     }
 }
